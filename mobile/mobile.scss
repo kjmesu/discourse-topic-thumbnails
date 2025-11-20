@@ -115,11 +115,15 @@
 
     .link-top-line {
       color: var(--tertiary);
+
+      a.title {
+        color: var(--tertiary) !important;
+      }
     }
 
     .title {
       color: var(--tertiary);
-      line-height: var(--line-height-medium, 1.4);
+      line-height: var(--line-height-large, 1.6);
     }
   }
 

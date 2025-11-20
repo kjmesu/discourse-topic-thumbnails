@@ -552,12 +552,16 @@
       align-items: center;
       min-width: 0;
       color: var(--tertiary);
+
+      a.title {
+        color: var(--tertiary) !important;
+      }
     }
 
     .title {
       color: var(--tertiary);
       font-weight: 700;
-      line-height: var(--line-height-medium, 1.4);
+      line-height: var(--line-height-large, 1.6);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
