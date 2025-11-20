@@ -599,6 +599,7 @@
     border-top: 1px solid var(--primary-low);
     padding: 0.75rem 1.5rem 1.25rem;
     color: var(--primary-low-mid);
+    width: unset;
   }
 
   .topic-thumbnail-metadata--card .topic-thumbnail-metadata__item {
@@ -609,6 +610,7 @@
     margin-left: auto;
     align-self: flex-end;
     text-align: right;
+    justify-content: right;
   }
 }
 
