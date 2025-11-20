@@ -120,12 +120,12 @@
     flex-wrap: wrap;
     gap: 0.75rem 1rem;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .topic-thumbnail-metadata__item {
     flex: 0 1 auto;
-    min-width: 110px;
+    min-width: 90px;
     justify-content: flex-start;
   }
 
