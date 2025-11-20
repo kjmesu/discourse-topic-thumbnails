@@ -112,6 +112,15 @@
       overflow-wrap: anywhere;
       max-width: 100%;
     }
+
+    .link-top-line {
+      color: var(--tertiary);
+    }
+
+    .title {
+      color: var(--tertiary);
+      line-height: var(--line-height-medium, 1.4);
+    }
   }
 
   .topic-thumbnail-metadata {
@@ -120,6 +129,7 @@
     flex-wrap: wrap;
     gap: 0.75rem;
     align-items: center;
+    color: var(--primary-low-mid);
   }
 
   .topic-thumbnail-card-date {
