@@ -136,14 +136,9 @@
     color: var(--primary-low-mid);
   }
 
-  .topic-thumbnail-metadata--card .topic-thumbnail-metadata__activity {
-    margin-left: 0;
-    width: 100%;
-    justify-content: flex-end;
-    text-align: right;
-  }
-
   .topic-thumbnail-card-date {
-    display: none;
+    right: 1rem;
+    top: 0.75rem;
+    font-size: var(--font-down-2);
   }
 }
