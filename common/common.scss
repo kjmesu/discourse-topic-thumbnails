@@ -598,6 +598,12 @@
   .topic-thumbnail-metadata--card .topic-thumbnail-metadata__item {
     color: var(--primary-medium);
   }
+
+  .topic-thumbnail-metadata--card .topic-thumbnail-metadata__activity {
+    margin-left: auto;
+    align-self: flex-end;
+    text-align: right;
+  }
 }
 
 .topic-thumbnails-masonry {
