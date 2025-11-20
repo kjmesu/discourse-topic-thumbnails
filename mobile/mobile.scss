@@ -119,14 +119,14 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem 1rem;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .topic-thumbnail-metadata__item {
-    flex: 1 1 calc(50% - 1rem);
-    min-width: 45%;
+    flex: 0 1 auto;
+    min-width: 110px;
     justify-content: flex-start;
-    min-height: 32px;
   }
 
   .topic-thumbnail-metadata__activity {
