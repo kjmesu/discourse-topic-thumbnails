@@ -72,3 +72,33 @@
     max-width: unset;
   }
 }
+
+.topic-thumbnails-card-style {
+  .topic-list-body {
+    gap: 1rem;
+  }
+
+  .topic-list-item {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "image"
+      "content"
+      "metadata";
+  }
+
+  .topic-list-thumbnail {
+    border-right: 0;
+
+    .main-thumbnail {
+      border-radius: var(--d-border-radius-large, 20px) var(--d-border-radius-large, 20px) 0 0;
+    }
+  }
+
+  .main-link {
+    padding: 1rem;
+  }
+
+  .topic-thumbnail-metadata {
+    padding: 0.5rem 1rem 1rem;
+  }
+}

@@ -15,6 +15,8 @@ export default apiInitializer((api) => {
       value.push("topic-thumbnails-list");
     } else if (ttService.displayMasonry) {
       value.push("topic-thumbnails-masonry");
+    } else if (ttService.displayCardStyle) {
+      value.push("topic-thumbnails-card-style");
     } else if (ttService.displayBlogStyle) {
       value.push("topic-thumbnails-blog-style-grid");
     }
@@ -69,12 +71,14 @@ export default apiInitializer((api) => {
         "isThumbnailGrid:topic-thumbnails-grid",
         "isThumbnailList:topic-thumbnails-list",
         "isMasonryList:topic-thumbnails-masonry",
+        "isCardStyleList:topic-thumbnails-card-style",
         "isBlogStyleGrid:topic-thumbnails-blog-style-grid",
       ],
       isMinimalGrid: readOnly("topicThumbnailsService.displayMinimalGrid"),
       isThumbnailGrid: readOnly("topicThumbnailsService.displayGrid"),
       isThumbnailList: readOnly("topicThumbnailsService.displayList"),
       isMasonryList: readOnly("topicThumbnailsService.displayMasonry"),
+      isCardStyleList: readOnly("topicThumbnailsService.displayCardStyle"),
       isBlogStyleGrid: readOnly("topicThumbnailsService.displayBlogStyle"),
     });
   }

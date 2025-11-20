@@ -82,6 +82,13 @@ export default class TopicListThumbnail extends Component {
       : this.topic.get("lastUnreadUrl");
   }
 
+  get showExtendedMetadata() {
+    return (
+      this.topicThumbnails.displayBlogStyle ||
+      this.topicThumbnails.displayCardStyle
+    );
+  }
+
   <template>
     <div
       class={{concatClass
@@ -126,21 +133,33 @@ export default class TopicListThumbnail extends Component {
       </div>
     {{/if}}
 
-    {{#if this.topicThumbnails.displayBlogStyle}}
-      <div class="topic-thumbnail-blog-data">
-        <div class="topic-thumbnail-blog-data-views">
+    {{#if this.showExtendedMetadata}}
+      <div
+        class={{concatClass
+          "topic-thumbnail-metadata"
+          (if
+            this.topicThumbnails.displayBlogStyle
+            "topic-thumbnail-metadata--blog"
+          )
+          (if
+            this.topicThumbnails.displayCardStyle
+            "topic-thumbnail-metadata--card"
+          )
+        }}
+      >
+        <div class="topic-thumbnail-metadata__item topic-thumbnail-metadata__views">
           {{dIcon "eye"}}
           <span class="number">
             {{this.topic.views}}
           </span>
         </div>
-        <div class="topic-thumbnail-blog-data-likes">
+        <div class="topic-thumbnail-metadata__item topic-thumbnail-metadata__likes">
           {{dIcon "heart"}}
           <span class="number">
             {{this.topic.like_count}}
           </span>
         </div>
-        <div class="topic-thumbnail-blog-data-comments">
+        <div class="topic-thumbnail-metadata__item topic-thumbnail-metadata__comments">
           {{dIcon "comment"}}
           <span class="number">
             {{this.topic.reply_count}}
@@ -148,7 +167,8 @@ export default class TopicListThumbnail extends Component {
         </div>
         <div
           class={{concatClass
-            "topic-thumbnail-blog-data-activity"
+            "topic-thumbnail-metadata__item"
+            "topic-thumbnail-metadata__activity"
             "activity"
             (coldAgeClass
               this.topic.createdAt startDate=this.topic.bumpedAt class=""
