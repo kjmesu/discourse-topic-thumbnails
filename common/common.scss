@@ -551,15 +551,15 @@
       display: flex;
       align-items: center;
       min-width: 0;
-      color: var(--tertiary);
+      color: var(--primary);
 
       a.title {
-        color: var(--tertiary) !important;
+        color: var(--primary) !important;
       }
     }
 
     .title {
-      color: var(--tertiary);
+      color: var(--primary);
       font-weight: 700;
       line-height: var(--line-height-large, 1.6);
       display: -webkit-box;

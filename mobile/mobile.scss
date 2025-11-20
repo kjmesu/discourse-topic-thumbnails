@@ -114,15 +114,15 @@
     }
 
     .link-top-line {
-      color: var(--tertiary);
+      color: var(--primary);
 
       a.title {
-        color: var(--tertiary) !important;
+        color: var(--primary) !important;
       }
     }
 
     .title {
-      color: var(--tertiary);
+      color: var(--primary);
       line-height: var(--line-height-large, 1.6);
     }
   }
