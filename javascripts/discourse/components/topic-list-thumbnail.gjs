@@ -1,5 +1,6 @@
 import Component from "@glimmer/component";
 import { service } from "@ember/service";
+import UserInfo from "discourse/components/user-info";
 import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
@@ -12,7 +13,8 @@ export default class TopicListThumbnail extends Component {
 
   // Make sure to update about.json thumbnail sizes if you change these variables
   get displayWidth() {
-    return this.topicThumbnails.displayList
+    return this.topicThumbnails.displayList ||
+      this.topicThumbnails.displayCompactStyle
       ? settings.list_thumbnail_size
       : 400;
   }
@@ -82,6 +84,10 @@ export default class TopicListThumbnail extends Component {
       : this.topic.get("lastUnreadUrl");
   }
 
+  get showCompactAuthor() {
+    return this.topicThumbnails.displayCompactStyle && this.topic?.creator;
+  }
+
   <template>
     <div
       class={{concatClass
@@ -116,6 +122,16 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
       </a>
     </div>
+
+    {{#if this.showCompactAuthor}}
+      <UserInfo
+        @user={{this.topic.creator}}
+        @includeLink={{true}}
+        @includeAvatar={{true}}
+        @size="small"
+        class="topic-compact-author"
+      />
+    {{/if}}
 
     {{#if this.topicThumbnails.showLikes}}
       <div class="topic-thumbnail-likes">

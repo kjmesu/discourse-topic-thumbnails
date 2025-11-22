@@ -14,6 +14,10 @@ const listCategories = settings.list_categories
   .split("|")
   .map((id) => parseInt(id, 10));
 
+const compactCategories = settings.compact_categories
+  .split("|")
+  .map((id) => parseInt(id, 10));
+
 const gridCategories = settings.grid_categories
   .split("|")
   .map((id) => parseInt(id, 10));
@@ -28,6 +32,7 @@ const blogStyleCategories = settings.blog_style_categories
 
 const minimalGridTags = settings.minimal_grid_tags.split("|");
 const listTags = settings.list_tags.split("|");
+const compactTags = settings.compact_tags.split("|");
 const gridTags = settings.grid_tags.split("|");
 const masonryTags = settings.masonry_tags.split("|");
 const blogStyleTags = settings.blog_style_tags.split("|");
@@ -116,6 +121,8 @@ export default class TopicThumbnailService extends Service {
       return "grid";
     } else if (listCategories.includes(viewingCategoryId)) {
       return "list";
+    } else if (compactCategories.includes(viewingCategoryId)) {
+      return "compact-style";
     } else if (masonryTags.includes(viewingTagId)) {
       return "masonry";
     } else if (minimalGridTags.includes(viewingTagId)) {
@@ -126,6 +133,8 @@ export default class TopicThumbnailService extends Service {
       return "grid";
     } else if (listTags.includes(viewingTagId)) {
       return "list";
+    } else if (compactTags.includes(viewingTagId)) {
+      return "compact-style";
     } else if (isTopicRoute && settings.suggested_topics_mode) {
       return settings.suggested_topics_mode;
     } else if (isTopicListRoute || settings.enable_outside_topic_lists) {
@@ -177,13 +186,25 @@ export default class TopicThumbnailService extends Service {
     return shouldDisplay && displayMode === "blog-style";
   }
 
+  @discourseComputed("shouldDisplay", "displayMode")
+  displayCompactStyle(shouldDisplay, displayMode) {
+    return shouldDisplay && displayMode === "compact-style";
+  }
+
   @discourseComputed("displayMinimalGrid")
   showLikes(isMinimalGrid) {
     return isMinimalGrid;
   }
 
   get availableViewModes() {
-    const allModes = ["minimal-grid", "grid", "masonry", "list", "blog-style"];
+    const allModes = [
+      "minimal-grid",
+      "grid",
+      "masonry",
+      "list",
+      "blog-style",
+      "compact-style",
+    ];
     const settingValue = (settings.view_selector_modes || "").trim();
     if (!settingValue) {
       return allModes;

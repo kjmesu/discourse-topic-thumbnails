@@ -17,12 +17,18 @@ export default apiInitializer((api) => {
       value.push("topic-thumbnails-masonry");
     } else if (ttService.displayBlogStyle) {
       value.push("topic-thumbnails-blog-style-grid");
+    } else if (ttService.displayCompactStyle) {
+      value.push("topic-thumbnails-compact");
     }
     return value;
   });
 
   api.registerValueTransformer("topic-list-columns", ({ value: columns }) => {
-    if (ttService.enabledForRoute && !ttService.displayList) {
+    if (
+      ttService.enabledForRoute &&
+      !ttService.displayList &&
+      !ttService.displayCompactStyle
+    ) {
       columns.add(
         "thumbnail",
         { item: TopicListThumbnail },
@@ -35,14 +41,18 @@ export default apiInitializer((api) => {
   api.renderInOutlet(
     "topic-list-before-link",
     <template>
-      {{#if ttService.displayList}}
+      {{#if (or ttService.displayList ttService.displayCompactStyle)}}
         <TopicListThumbnail @topic={{@outletArgs.topic}} />
       {{/if}}
     </template>
   );
 
   api.registerValueTransformer("topic-list-item-mobile-layout", ({ value }) => {
-    if (ttService.enabledForRoute && !ttService.displayList) {
+    if (
+      ttService.enabledForRoute &&
+      !ttService.displayList &&
+      !ttService.displayCompactStyle
+    ) {
       // Force the desktop layout
       return false;
     }
@@ -70,12 +80,14 @@ export default apiInitializer((api) => {
         "isThumbnailList:topic-thumbnails-list",
         "isMasonryList:topic-thumbnails-masonry",
         "isBlogStyleGrid:topic-thumbnails-blog-style-grid",
+        "isCompactStyle:topic-thumbnails-compact",
       ],
       isMinimalGrid: readOnly("topicThumbnailsService.displayMinimalGrid"),
       isThumbnailGrid: readOnly("topicThumbnailsService.displayGrid"),
       isThumbnailList: readOnly("topicThumbnailsService.displayList"),
       isMasonryList: readOnly("topicThumbnailsService.displayMasonry"),
       isBlogStyleGrid: readOnly("topicThumbnailsService.displayBlogStyle"),
+      isCompactStyle: readOnly("topicThumbnailsService.displayCompactStyle"),
     });
   }
 });
