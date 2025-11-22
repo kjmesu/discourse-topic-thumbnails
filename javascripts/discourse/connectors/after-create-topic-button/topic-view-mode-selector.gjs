@@ -1,28 +1,26 @@
 import Component from "@glimmer/component";
 import { action } from "@ember/object";
-import { tracked } from "@glimmer/tracking";
 import { service } from "@ember/service";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
-import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import willDestroy from "@ember/render-modifiers/modifiers/will-destroy";
+import DropdownMenu from "discourse/components/dropdown-menu";
+import DMenu from "discourse/float-kit/components/d-menu";
 import concatClass from "discourse/helpers/concat-class";
 import icon from "discourse/helpers/d-icon";
-import { eq } from "discourse/truth-helpers";
 import I18n from "I18n";
 import { themePrefix } from "virtual:theme";
 
 export default class TopicViewModeSelector extends Component {
   @service topicThumbnails;
 
-  @tracked isOpen = false;
-  wrapperElement = null;
+  menuApi = null;
 
   get showSelector() {
+    const tt = this.topicThumbnails;
     return (
-      this.topicThumbnails.enabledForRoute &&
-      this.topicThumbnails.enabledForDevice &&
-      this.topicThumbnails.availableViewModes.length > 1
+      tt?.enabledForRoute &&
+      tt?.enabledForDevice &&
+      (tt?.availableViewModes?.length || 0) > 1
     );
   }
 
@@ -30,103 +28,105 @@ export default class TopicViewModeSelector extends Component {
     return I18n.t(themePrefix("topic_thumbnails.view_selector.label"));
   }
 
-  get modes() {
-    return this.topicThumbnails.availableViewModes.map((mode) => ({
+  get manualMode() {
+    return this.topicThumbnails?.manualDisplayMode || null;
+  }
+
+  get activeMode() {
+    return this.topicThumbnails?.displayMode || null;
+  }
+
+  get automaticOptionLabel() {
+    return I18n.t(themePrefix("topic_thumbnails.view_selector.automatic"));
+  }
+
+  get modeOptions() {
+    const modes = this.topicThumbnails?.availableViewModes || [];
+    return modes.map((mode) => ({
       value: mode,
       label: I18n.t(themePrefix(`topic_thumbnails.view_modes.${mode}`), {
         defaultValue: mode,
       }),
+      active: this.activeMode === mode,
     }));
   }
 
-  get selectedMode() {
-    return this.topicThumbnails.manualDisplayMode || null;
-  }
-
   @action
-  toggleMenu(event) {
-    event?.stopPropagation();
-    this.isOpen = !this.isOpen;
-  }
-
-  @action
-  closeMenu() {
-    this.isOpen = false;
+  registerMenu(api) {
+    this.menuApi = api;
   }
 
   @action
   selectMode(mode) {
-    const normalized = this.selectedMode === mode ? null : mode;
-    this.topicThumbnails.setManualDisplayMode(normalized);
-    this.closeMenu();
+    this.topicThumbnails?.setManualDisplayMode(mode);
+    this.menuApi?.close?.();
   }
 
   @action
-  registerWrapper(element) {
-    this.wrapperElement = element;
-    document.addEventListener("click", this.handleDocumentClick, true);
-  }
-
-  @action
-  cleanupWrapper() {
-    document.removeEventListener("click", this.handleDocumentClick, true);
-    this.wrapperElement = null;
-  }
-
-  @action
-  handleDocumentClick(event) {
-    if (this.wrapperElement?.contains(event.target)) {
-      return;
-    }
-    this.closeMenu();
+  resetToDefault() {
+    this.topicThumbnails?.setManualDisplayMode(null);
+    this.menuApi?.close?.();
   }
 
   <template>
     {{#if this.showSelector}}
-      <div
-        class={{concatClass
-          "topic-view-mode-selector"
-          (if this.isOpen "is-open")
-        }}
-        {{didInsert this.registerWrapper}}
-        {{willDestroy this.cleanupWrapper}}
+      <DMenu
+        @identifier="topic-view-mode-selector"
+        @title={{this.buttonLabel}}
+        @ariaLabel={{this.buttonLabel}}
+        @label=""
+        @modalForMobile={{true}}
+        @onRegisterApi={{this.registerMenu}}
+        @triggerClass="btn btn-default topic-view-mode-selector__trigger"
+        @contentClass="topic-view-mode-selector__content"
       >
-        <button
-          type="button"
-          class="btn btn-default topic-view-mode-selector__button"
-          aria-haspopup="listbox"
-          aria-expanded={{if this.isOpen "true" "false"}}
-          aria-label={{this.buttonLabel}}
-          {{on "click" this.toggleMenu}}
-        >
-          <span class="topic-view-mode-selector__icon">
+        <:trigger>
+          <span class="topic-view-mode-selector__icon" aria-hidden="true">
             {{icon "list"}}
           </span>
-          <span class="topic-view-mode-selector__caret">
-            {{icon (if this.isOpen "caret-up" "caret-down")}}
-          </span>
-        </button>
+          <span class="sr-only">{{this.buttonLabel}}</span>
+        </:trigger>
 
-        <div
-          class="topic-view-mode-selector__menu"
-          role="listbox"
-          aria-label={{this.buttonLabel}}
-        >
-          {{#each this.modes as |mode|}}
-            <button
-              type="button"
-              class={{concatClass
-                "topic-view-mode-selector__menu-item"
-                (if (eq this.selectedMode mode.value) "is-selected")
-              }}
-              data-value={{mode.value}}
-              {{on "click" (fn this.selectMode mode.value)}}
-            >
-              {{mode.label}}
-            </button>
-          {{/each}}
-        </div>
-      </div>
+        <:content>
+          <DropdownMenu class="topic-view-mode-selector__list" as |dropdown|>
+            <dropdown.item>
+              <button
+                type="button"
+                class={{concatClass
+                  "topic-view-mode-selector__option"
+                  (if this.manualMode null "-active")
+                }}
+                {{on "click" this.resetToDefault}}
+              >
+                <span>{{this.automaticOptionLabel}}</span>
+                {{#unless this.manualMode}}
+                  {{icon "check"}}
+                {{/unless}}
+              </button>
+            </dropdown.item>
+
+            <dropdown.divider />
+
+            {{#each this.modeOptions as |mode|}}
+              <dropdown.item>
+                <button
+                  type="button"
+                  class={{concatClass
+                    "topic-view-mode-selector__option"
+                    (if mode.active "-active")
+                  }}
+                  {{on "click" (fn this.selectMode mode.value)}}
+                >
+                  <span>{{mode.label}}</span>
+                  {{#if mode.active}}
+                    {{icon "check"}}
+                  {{/if}}
+                </button>
+              </dropdown.item>
+            {{/each}}
+          </DropdownMenu>
+        </:content>
+      </DMenu>
     {{/if}}
   </template>
 }

@@ -39,10 +39,11 @@ RSpec.describe "Topic Thumbnails", type: :system do
   it "allows selecting a manual view from the navigation dropdown" do
     visit "/latest"
 
-    expect(page).to have_css("#topic-view-mode-select")
+    expect(page).to have_css(".topic-view-mode-selector__trigger")
     expect(page).to have_css(".topic-list.topic-thumbnails-grid")
 
-    find("#topic-view-mode-select").select("List")
+    find(".topic-view-mode-selector__trigger").click
+    find(".topic-view-mode-selector__option", text: "List").click
 
     expect(page).to have_css(".topic-list.topic-thumbnails-list")
   end
