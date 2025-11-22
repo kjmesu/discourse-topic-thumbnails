@@ -41,8 +41,12 @@ export default apiInitializer((api) => {
   api.renderInOutlet(
     "topic-list-before-link",
     <template>
-      {{#if (or ttService.displayList ttService.displayCompactStyle)}}
+      {{#if ttService.displayList}}
         <TopicListThumbnail @topic={{@outletArgs.topic}} />
+      {{else}}
+        {{#if ttService.displayCompactStyle}}
+          <TopicListThumbnail @topic={{@outletArgs.topic}} />
+        {{/if}}
       {{/if}}
     </template>
   );
