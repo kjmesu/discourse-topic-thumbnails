@@ -124,13 +124,21 @@ export default class TopicListThumbnail extends Component {
     </div>
 
     {{#if this.showCompactAuthor}}
-      <UserInfo
-        @user={{this.topic.creator}}
-        @includeLink={{true}}
-        @includeAvatar={{true}}
-        @size="small"
-        class="topic-compact-author"
-      />
+      <div class="topic-compact-author">
+        <UserInfo
+          @user={{this.topic.creator}}
+          @includeLink={{true}}
+          @includeAvatar={{true}}
+          @size="small"
+          class="topic-compact-author__user"
+        />
+        {{#if this.topic.bumpedAt}}
+          <span class="topic-compact-author__activity">
+            {{formatDate this.topic.bumpedAt format="tiny" noTitle="true"}}
+            ago
+          </span>
+        {{/if}}
+      </div>
     {{/if}}
 
     {{#if this.topicThumbnails.showLikes}}
