@@ -35,4 +35,15 @@ RSpec.describe "Topic Thumbnails", type: :system do
 
     expect(page).to have_css(".topic-list-item.masonry-0")
   end
+
+  it "allows selecting a manual view from the navigation dropdown" do
+    visit "/latest"
+
+    expect(page).to have_css("#topic-view-mode-select")
+    expect(page).to have_css(".topic-list.topic-thumbnails-grid")
+
+    find("#topic-view-mode-select").select("List")
+
+    expect(page).to have_css(".topic-list.topic-thumbnails-list")
+  end
 end
