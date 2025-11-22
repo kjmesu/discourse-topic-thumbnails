@@ -447,7 +447,7 @@
     .topic-compact-author__user {
       display: inline-flex;
       align-items: center;
-      gap: 0.3em;
+      gap: 0.4em;
       margin-bottom: 0;
     }
 
@@ -488,15 +488,21 @@
     .topic-compact-author__activity {
       display: inline-flex;
       align-items: center;
-      gap: 0.25em;
+      gap: 0.35em;
       font-size: inherit;
       color: currentColor;
 
       &::before {
         content: "•";
         color: var(--primary-low-mid);
-        margin: 0 0.25em;
+        margin: 0 0.35em;
       }
+    }
+
+    .user-info .user-detail .name-line > a {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.2em;
     }
   }
 
