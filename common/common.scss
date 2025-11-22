@@ -417,8 +417,8 @@
 
   .topic-list-thumbnail {
     grid-area: thumbnail;
-    width: 64px;
-    height: 64px;
+    width: 102px;
+    height: 76px;
     margin: 0;
     float: none;
     border-radius: 0.5em;
@@ -437,7 +437,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35em;
-    font-size: var(--font-down-1);
+    font-size: var(--font-down-1-rem);
     color: var(--primary-medium);
 
     a {
@@ -447,14 +447,14 @@
     .topic-compact-author__user {
       display: inline-flex;
       align-items: center;
-      gap: 0.4em;
+      gap: 0.3em;
       margin-bottom: 0;
     }
 
     .topic-compact-author__user .user-image {
       margin: 0;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
 
     .topic-compact-author__user .user-image-inner,
@@ -488,14 +488,14 @@
     .topic-compact-author__activity {
       display: inline-flex;
       align-items: center;
-      gap: 0.35em;
+      gap: 0.25em;
       font-size: inherit;
       color: currentColor;
 
       &::before {
         content: "•";
         color: var(--primary-low-mid);
-        margin: 0 0.35em;
+        margin: 0 0.25em;
       }
     }
   }
