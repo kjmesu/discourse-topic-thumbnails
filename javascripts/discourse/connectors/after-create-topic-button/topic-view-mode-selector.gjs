@@ -73,20 +73,13 @@ export default class TopicViewModeSelector extends Component {
       <DMenu
         @identifier="topic-view-mode-selector"
         @title={{this.buttonLabel}}
+        @icon="list"
         @ariaLabel={{this.buttonLabel}}
-        @label=""
         @modalForMobile={{true}}
         @onRegisterApi={{this.registerMenu}}
-        @triggerClass="btn btn-default topic-view-mode-selector__trigger"
+        @triggerClass="btn-default topic-view-mode-selector__trigger"
         @contentClass="topic-view-mode-selector__content"
       >
-        <:trigger>
-          <span class="topic-view-mode-selector__icon" aria-hidden="true">
-            {{icon "list"}}
-          </span>
-          <span class="sr-only">{{this.buttonLabel}}</span>
-        </:trigger>
-
         <:content>
           <DropdownMenu class="topic-view-mode-selector__list" as |dropdown|>
             <dropdown.item>
@@ -94,9 +87,11 @@ export default class TopicViewModeSelector extends Component {
                 type="button"
                 class={{concatClass
                   "topic-view-mode-selector__option"
-                  (if this.manualMode null "-active")
+                  (unless this.manualMode "-active")
                 }}
                 {{on "click" this.resetToDefault}}
+                role="menuitemradio"
+                aria-checked={{if this.manualMode "false" "true"}}
               >
                 <span>{{this.automaticOptionLabel}}</span>
                 {{#unless this.manualMode}}
@@ -116,6 +111,8 @@ export default class TopicViewModeSelector extends Component {
                     (if mode.active "-active")
                   }}
                   {{on "click" (fn this.selectMode mode.value)}}
+                  role="menuitemradio"
+                  aria-checked={{if mode.active "true" "false"}}
                 >
                   <span>{{mode.label}}</span>
                   {{#if mode.active}}
