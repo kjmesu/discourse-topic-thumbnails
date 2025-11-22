@@ -36,10 +36,6 @@ export default class TopicViewModeSelector extends Component {
     return this.topicThumbnails?.displayMode || null;
   }
 
-  get automaticOptionLabel() {
-    return I18n.t(themePrefix("topic_thumbnails.view_selector.automatic"));
-  }
-
   get modeOptions() {
     const modes = this.topicThumbnails?.availableViewModes || [];
     return modes.map((mode) => ({
@@ -58,13 +54,11 @@ export default class TopicViewModeSelector extends Component {
 
   @action
   selectMode(mode) {
-    this.topicThumbnails?.setManualDisplayMode(mode);
-    this.menuApi?.close?.();
-  }
-
-  @action
-  resetToDefault() {
-    this.topicThumbnails?.setManualDisplayMode(null);
+    if (this.manualMode === mode) {
+      this.topicThumbnails?.setManualDisplayMode(null);
+    } else {
+      this.topicThumbnails?.setManualDisplayMode(mode);
+    }
     this.menuApi?.close?.();
   }
 
@@ -82,26 +76,6 @@ export default class TopicViewModeSelector extends Component {
       >
         <:content>
           <DropdownMenu class="topic-view-mode-selector__list" as |dropdown|>
-            <dropdown.item>
-              <button
-                type="button"
-                class={{concatClass
-                  "topic-view-mode-selector__option"
-                  (unless this.manualMode "-active")
-                }}
-                {{on "click" this.resetToDefault}}
-                role="menuitemradio"
-                aria-checked={{if this.manualMode "false" "true"}}
-              >
-                <span>{{this.automaticOptionLabel}}</span>
-                {{#unless this.manualMode}}
-                  {{icon "check"}}
-                {{/unless}}
-              </button>
-            </dropdown.item>
-
-            <dropdown.divider />
-
             {{#each this.modeOptions as |mode|}}
               <dropdown.item>
                 <button

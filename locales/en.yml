@@ -22,7 +22,6 @@ en:
   topic_thumbnails:
     view_selector:
       label: "Change topic view"
-      automatic: "Follow default"
     view_modes:
       minimal-grid: "Minimal grid"
       grid: "Grid"
