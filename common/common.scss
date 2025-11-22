@@ -448,6 +448,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4em;
+      margin-bottom: 0;
     }
 
     .topic-compact-author__user .user-image {
@@ -521,7 +522,7 @@
   }
 
   .link-top-line {
-    font-size: 1rem;
+    font-size: var(--font-size-1-rem);
   }
 }
 
