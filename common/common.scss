@@ -436,7 +436,7 @@
     grid-area: meta;
     display: inline-flex;
     align-items: center;
-    gap: 0.35em;
+    gap: 0.15em;
     font-size: var(--font-down-1-rem);
     color: var(--primary-medium);
 
@@ -488,7 +488,7 @@
     .topic-compact-author__activity {
       display: inline-flex;
       align-items: center;
-      gap: 0.35em;
+      gap: 0.25em;
       font-size: inherit;
       color: currentColor;
 
@@ -502,7 +502,6 @@
     .user-info .user-detail .name-line > a {
       display: inline-flex;
       align-items: baseline;
-      gap: 0.2em;
     }
   }
 
