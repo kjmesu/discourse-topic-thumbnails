@@ -5,11 +5,16 @@ import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import formatDate from "discourse/helpers/format-date";
+import { i18n } from "discourse-i18n";
 
 export default class TopicListThumbnail extends Component {
   @service topicThumbnails;
 
   responsiveRatios = [1, 1.5, 2];
+
+  get commentsLabel() {
+    return i18n("topic.comments_lowercase");
+  }
 
   // Make sure to update about.json thumbnail sizes if you change these variables
   get displayWidth() {
@@ -144,7 +149,7 @@ export default class TopicListThumbnail extends Component {
     {{#if this.topicThumbnails.displayCompactStyle}}
       <div class="topic-compact-meta">
         {{this.topic.reply_count}}
-        {{i18n "topic.comments_lowercase"}}
+        {{this.commentsLabel}}
       </div>
     {{/if}}
 
