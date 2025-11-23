@@ -93,11 +93,66 @@ export default class TopicListThumbnail extends Component {
   }
 
   <template>
-    <a
-      href={{this.url}}
-      class="topic-thumbnail-compact-link"
-      aria-label={{this.topic.title}}
-    >
+    {{#if this.topicThumbnails.displayCompactStyle}}
+      <a
+        href={{this.url}}
+        class="topic-thumbnail-compact-link"
+        aria-label={{this.topic.title}}
+      >
+        <div
+          class={{concatClass
+            "topic-list-thumbnail"
+            (if this.hasThumbnail "has-thumbnail" "no-thumbnail")
+          }}
+        >
+          {{#if this.hasThumbnail}}
+            <img
+              class="background-thumbnail"
+              src={{this.fallbackSrc}}
+              srcset={{this.srcSet}}
+              width={{this.width}}
+              height={{this.height}}
+              loading="lazy"
+              alt=""
+            />
+            <img
+              class="main-thumbnail"
+              src={{this.fallbackSrc}}
+              srcset={{this.srcSet}}
+              width={{this.width}}
+              height={{this.height}}
+              loading="lazy"
+              alt=""
+            />
+          {{else}}
+            <div class="thumbnail-placeholder">
+              {{dIcon settings.placeholder_icon}}
+            </div>
+          {{/if}}
+        </div>
+
+        {{#if this.showCompactAuthor}}
+          <div class="topic-compact-author">
+            <UserInfo
+              @user={{this.topic.creator}}
+              @includeLink={{true}}
+              @includeAvatar={{true}}
+              @size="small"
+              class="topic-compact-author__user"
+            />
+            <span class="topic-compact-author__activity">
+              {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+              ago
+            </span>
+          </div>
+        {{/if}}
+
+        <span class="topic-compact-meta">
+          {{this.topic.posts_count}}
+          {{this.commentsLabel}}
+        </span>
+      </a>
+    {{else}}
       <div
         class={{concatClass
           "topic-list-thumbnail"
@@ -129,30 +184,7 @@ export default class TopicListThumbnail extends Component {
           </div>
         {{/if}}
       </div>
-
-      {{#if this.showCompactAuthor}}
-        <div class="topic-compact-author">
-          <UserInfo
-            @user={{this.topic.creator}}
-            @includeLink={{true}}
-            @includeAvatar={{true}}
-            @size="small"
-            class="topic-compact-author__user"
-          />
-          <span class="topic-compact-author__activity">
-            {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
-            ago
-          </span>
-        </div>
-      {{/if}}
-
-      {{#if this.topicThumbnails.displayCompactStyle}}
-        <span class="topic-compact-meta">
-          {{this.topic.posts_count}}
-          {{this.commentsLabel}}
-        </span>
-      {{/if}}
-    </a>
+    {{/if}}
 
     {{#if this.topicThumbnails.showLikes}}
       <div class="topic-thumbnail-likes">
