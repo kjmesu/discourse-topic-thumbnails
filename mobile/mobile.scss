@@ -74,6 +74,10 @@
 }
 
 .topic-thumbnails-compact {
+  .topic-list-data {
+    max-width: unset;
+  }
+    
   .topic-list-item {
     grid-template-columns: auto;
     grid-template-rows: auto auto auto;
