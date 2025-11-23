@@ -92,6 +92,20 @@ export default class TopicListThumbnail extends Component {
     return this.topicThumbnails.displayCompactStyle && this.topic?.creator;
   }
 
+  get commentsCount() {
+    const replies = this.topic.reply_count;
+    if (typeof replies === "number" && replies > 0) {
+      return replies;
+    }
+
+    const posts = this.topic.posts_count;
+    if (typeof posts === "number") {
+      return Math.max(posts - 1, 0);
+    }
+
+    return 0;
+  }
+
   <template>
     {{#if this.topicThumbnails.displayCompactStyle}}
       <a
@@ -148,7 +162,7 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
 
         <span class="topic-compact-meta">
-          {{this.topic.posts_count}}
+          {{this.commentsCount}}
           {{this.commentsLabel}}
         </span>
       </a>
