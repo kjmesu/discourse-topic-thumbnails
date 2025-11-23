@@ -52,6 +52,8 @@ export default apiInitializer((api) => {
   );
 
   api.registerValueTransformer("topic-list-item-mobile-layout", ({ value }) => {
+    return false;
+    
     if (
       ttService.enabledForRoute &&
       !ttService.displayList &&
