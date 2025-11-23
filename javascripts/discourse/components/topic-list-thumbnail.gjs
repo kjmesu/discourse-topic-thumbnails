@@ -136,12 +136,10 @@ export default class TopicListThumbnail extends Component {
           @size="small"
           class="topic-compact-author__user"
         />
-        {{#if this.topic.bumpedAt}}
-          <span class="topic-compact-author__activity">
-            {{formatDate this.topic.bumpedAt format="tiny" noTitle="true"}}
-            ago
-          </span>
-        {{/if}}
+        <span class="topic-compact-author__activity">
+          {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+          ago
+        </span>
       </div>
     {{/if}}
 
