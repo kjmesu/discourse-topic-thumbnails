@@ -507,25 +507,9 @@
     }
   }
 
-  .num.posts {
-    grid-area: replies;
-    justify-self: flex-end;
-    align-self: flex-start;
-
-    .badge-posts {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35em;
-      padding: 0.25em 0.75em;
-      border-radius: 999px;
-      background: var(--primary-low);
-      color: var(--primary-high);
-      font-weight: 600;
-    }
-  }
-
+  .num.posts,
   .activity {
-    display: none;
+    display: none !important;
   }
 
   .link-top-line {
