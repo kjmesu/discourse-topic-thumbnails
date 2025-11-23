@@ -52,7 +52,9 @@ export default apiInitializer((api) => {
   );
 
   api.registerValueTransformer("topic-list-item-mobile-layout", ({ value }) => {
-    console.log("ttService", ttService);
+    console.log("ttService.enabledForRoute", ttService.enabledForRoute);
+    console.log("ttService.displayList", ttService.displayList);
+    console.log("ttService.displayCompactStyle", ttService.displayCompactStyle);
     if (
       ttService.enabledForRoute &&
       !ttService.displayList &&
