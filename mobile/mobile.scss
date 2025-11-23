@@ -86,6 +86,11 @@
 
   .main-link {
     grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "thumbnail author"
+      "thumbnail title"
+      "thumbnail details";
   }
 
   .topic-list-thumbnail {

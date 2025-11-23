@@ -141,6 +141,13 @@ export default class TopicListThumbnail extends Component {
       </div>
     {{/if}}
 
+    {{#if this.topicThumbnails.displayCompactStyle}}
+      <div class="topic-compact-meta">
+        {{this.topic.reply_count}}
+        {{i18n "topic.comments_lowercase"}}
+      </div>
+    {{/if}}
+
     {{#if this.topicThumbnails.showLikes}}
       <div class="topic-thumbnail-likes">
         {{dIcon "heart"}}
