@@ -93,13 +93,17 @@ export default class TopicListThumbnail extends Component {
   }
 
   <template>
-    <div
-      class={{concatClass
-        "topic-list-thumbnail"
-        (if this.hasThumbnail "has-thumbnail" "no-thumbnail")
-      }}
+    <a
+      href={{this.url}}
+      class="topic-thumbnail-compact-link"
+      aria-label={{this.topic.title}}
     >
-      <a href={{this.url}} role="img" aria-label={{this.topic.title}}>
+      <div
+        class={{concatClass
+          "topic-list-thumbnail"
+          (if this.hasThumbnail "has-thumbnail" "no-thumbnail")
+        }}
+      >
         {{#if this.hasThumbnail}}
           <img
             class="background-thumbnail"
@@ -124,31 +128,31 @@ export default class TopicListThumbnail extends Component {
             {{dIcon settings.placeholder_icon}}
           </div>
         {{/if}}
-      </a>
-    </div>
+      </div>
 
-    {{#if this.showCompactAuthor}}
-      <div class="topic-compact-author">
-        <UserInfo
-          @user={{this.topic.creator}}
-          @includeLink={{true}}
-          @includeAvatar={{true}}
-          @size="small"
-          class="topic-compact-author__user"
-        />
-        <span class="topic-compact-author__activity">
-          {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
-          ago
+      {{#if this.showCompactAuthor}}
+        <div class="topic-compact-author">
+          <UserInfo
+            @user={{this.topic.creator}}
+            @includeLink={{true}}
+            @includeAvatar={{true}}
+            @size="small"
+            class="topic-compact-author__user"
+          />
+          <span class="topic-compact-author__activity">
+            {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+            ago
+          </span>
+        </div>
+      {{/if}}
+
+      {{#if this.topicThumbnails.displayCompactStyle}}
+        <span class="topic-compact-meta">
+          {{this.topic.posts_count}}
+          {{this.commentsLabel}}
         </span>
-      </div>
-    {{/if}}
-
-    {{#if this.topicThumbnails.displayCompactStyle}}
-      <div class="topic-compact-meta">
-        {{this.topic.posts_count}}
-        {{this.commentsLabel}}
-      </div>
-    {{/if}}
+      {{/if}}
+    </a>
 
     {{#if this.topicThumbnails.showLikes}}
       <div class="topic-thumbnail-likes">
