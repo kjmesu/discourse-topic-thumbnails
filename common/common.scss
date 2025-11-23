@@ -436,7 +436,6 @@
     grid-area: meta;
     display: inline-flex;
     align-items: center;
-    gap: 0.15em;
     font-size: var(--font-down-1-rem);
     color: var(--primary-medium);
 
@@ -502,6 +501,7 @@
     .user-info .user-detail .name-line > a {
       display: inline-flex;
       align-items: baseline;
+      gap: 0;
     }
   }
 
