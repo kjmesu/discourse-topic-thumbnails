@@ -147,7 +147,7 @@ export default class TopicListThumbnail extends Component {
 
     {{#if this.topicThumbnails.displayCompactStyle}}
       <div class="topic-compact-meta">
-        {{this.topic.reply_count}}
+        {{this.topic.posts_count}}
         {{this.commentsLabel}}
       </div>
     {{/if}}
