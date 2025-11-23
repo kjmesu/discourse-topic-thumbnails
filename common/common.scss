@@ -652,3 +652,9 @@
     top: var(--masonry-height-above);
   }
 }
+  .topic-compact-meta {
+    grid-area: meta;
+    margin-top: 0.15em;
+    font-size: var(--font-down-1-rem);
+    color: var(--primary-medium);
+  }
