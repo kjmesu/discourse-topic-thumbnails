@@ -452,8 +452,9 @@
 
     .topic-compact-author__user .user-image {
       margin: 0;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
+      line-height: var(--line-height-small);
     }
 
     .topic-compact-author__user .user-image-inner,
