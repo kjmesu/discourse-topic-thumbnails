@@ -640,8 +640,9 @@
   .topic-compact-meta {
     grid-area: details;
     margin-top: 0.1em;
-    font-size: var(--font-down-1-rem);
-    color: var(--secondary-high);
+    font-size: var(--font-down-2-rem);
+    color: var(--primary-low-mid);
+    font-weight: bold;
     text-decoration: none;
 
     &:hover,
