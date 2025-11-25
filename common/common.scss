@@ -338,7 +338,6 @@
   .topic-list {
     border-spacing: 0;
     width: 100%;
-    padding-top: 12px;
   }
 
   .topic-list-header,
@@ -348,6 +347,7 @@
 
   .topic-list-body {
     display: block;
+    padding-top: 12px;
   }
 
   .topic-list-item {
