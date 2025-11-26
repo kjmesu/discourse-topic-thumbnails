@@ -10,6 +10,7 @@ import { on } from "@ember/modifier";
 import { ajax } from "discourse/lib/ajax";
 import { next } from "@ember/runloop";
 import TopicCompactPostVotes from "./topic-compact-post-votes";
+import { queueVoteRequest } from "../lib/topic-compact-vote-request-queue";
 
 export default class TopicCompactVoteControls extends Component {
   @service siteSettings;
@@ -100,9 +101,11 @@ export default class TopicCompactVoteControls extends Component {
     this.post = null;
 
     try {
-      const post = await ajax(`/posts/${postId}.json`, {
-        data: { skip_rate_limit: true },
-      });
+      const post = await queueVoteRequest(`post-${postId}`, () =>
+        ajax(`/posts/${postId}.json`, {
+          data: { skip_rate_limit: true },
+        })
+      );
       this.post = this._decoratePost(post);
     } catch (error) {
       this.post = null;
@@ -119,9 +122,11 @@ export default class TopicCompactVoteControls extends Component {
     this._loadedTopicId = topicId;
 
     try {
-      const post = await ajax(`/posts/by_number/${topicId}/1.json`, {
-        data: { skip_rate_limit: true },
-      });
+      const post = await queueVoteRequest(`topic-${topicId}`, () =>
+        ajax(`/posts/by_number/${topicId}/1.json`, {
+          data: { skip_rate_limit: true },
+        })
+      );
       this._loadedPostId = post.id;
       this.post = this._decoratePost(post);
     } catch (error) {
