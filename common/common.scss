@@ -658,17 +658,32 @@
     font-weight: bold;
     display: inline-flex;
     align-items: center;
-    gap: 1.2em;
-  }
+    gap: 2em;
 
-  .topic-compact-meta__comments {
-    text-decoration: none;
-    word-spacing: .2em;
-  }
+    .topic-compact-meta__comments {
+      text-decoration: none;
 
-  .topic-thumbnail-compact-link:hover .topic-compact-meta__comments,
-  .topic-thumbnail-compact-link:focus .topic-compact-meta__comments {
-    text-decoration: underline;
+      &:hover,
+      &:focus {
+        color: var(--primary);
+        text-decoration: none;
+      }
+    }
+
+    .topic-compact-meta__share {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25em;
+      cursor: pointer;
+      text-transform: none;
+
+      &:hover,
+      &:focus {
+        color: var(--primary);
+        text-decoration: none;
+        outline: none;
+      }
+    }
   }
 
   .topic-compact-votes {
