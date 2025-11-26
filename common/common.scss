@@ -353,6 +353,8 @@
 
   .topic-list-item {
     display: grid;
+    position: relative;
+    grid-template-columns: minmax(0, 1fr) 120px;
     grid-template-rows: auto auto;
     grid-template-areas:
       "topic replies"
