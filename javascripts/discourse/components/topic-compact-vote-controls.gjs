@@ -1,12 +1,12 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
-import { on } from "@ember/modifier";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { service } from "@ember/service";
 import routeAction from "discourse/helpers/route-action";
 import concatClass from "discourse/helpers/concat-class";
-import PostVotesVoteControls from "discourse/plugins/discourse-post-voting-reddit-mode/discourse/components/post-votes-vote-controls";
+import didUpdate from "@ember/render-modifiers/modifiers/did-update";
+import { on } from "@ember/modifier";
+import TopicCompactPostVotes from "./topic-compact-post-votes";
 
 export default class TopicCompactVoteControls extends Component {
   @service store;
@@ -110,7 +110,7 @@ export default class TopicCompactVoteControls extends Component {
         {{on "click" this.stopCardNavigation}}
       >
         {{#if this.shouldRender}}
-          <PostVotesVoteControls
+          <TopicCompactPostVotes
             @post={{this.post}}
             @showLogin={{routeAction "showLogin"}}
           />

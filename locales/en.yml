@@ -28,3 +28,6 @@ en:
       list: "List"
       blog-style: "Blog style"
       compact-style: "Compact"
+    compact_votes:
+      upvote: "Upvote topic"
+      downvote: "Downvote topic"

@@ -679,29 +679,51 @@
       display: none;
     }
 
-    .post-votes-post {
-      margin: 0;
-      flex-direction: row;
-      align-items: center;
-      gap: 0.1em;
-    }
-
-    .post-votes-button {
-      min-width: auto;
-      padding: 0;
-      font-size: var(--font-up-1);
-    }
-
-    .post-votes-post-toggle-voters {
-      padding: 0 0.15em;
-      min-width: auto;
-      background: transparent;
-      border: 0;
-      box-shadow: none;
-      font-weight: inherit;
-      color: inherit;
+    &__stack {
       display: inline-flex;
       align-items: center;
+      gap: 0.3em;
+    }
+
+    .topic-compact-vote-button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--primary-low-mid);
+      transition: color 0.15s ease;
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      .d-icon {
+        width: 1.15em;
+        height: 1.15em;
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--primary-medium);
+      }
+
+      &.is-active {
+        color: var(--tertiary);
+      }
+    }
+
+    .topic-compact-vote-count {
+      min-width: 1.5em;
+      text-align: center;
+      font-size: var(--font-down-2-rem);
+      font-weight: bold;
+      color: var(--primary-medium);
     }
   }
 .topic-thumbnail-compact-link {
