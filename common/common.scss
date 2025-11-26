@@ -695,7 +695,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: var(--primary-low-mid);
+      color: var(--primary-medium);
       transition: color 0.15s ease;
 
       &:disabled {
@@ -711,7 +711,7 @@
 
       &:hover,
       &:focus-visible {
-        color: var(--primary-medium);
+        color: var(--primary-high);
       }
 
       &.is-active {
