@@ -714,8 +714,12 @@
         color: var(--primary-high);
       }
 
-      &.is-active {
-        color: var(--tertiary);
+      &.topic-compact-vote-button--up.is-active {
+        color: #ff4500;
+      }
+
+      &.topic-compact-vote-button--down.is-active {
+        color: #b19cd9;
       }
     }
 
