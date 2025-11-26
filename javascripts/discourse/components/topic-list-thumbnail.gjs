@@ -1,4 +1,5 @@
 import Component from "@glimmer/component";
+import { action } from "@ember/object";
 import { service } from "@ember/service";
 import { on } from "@ember/modifier";
 import UserInfo from "discourse/components/user-info";
@@ -6,10 +7,14 @@ import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import formatDate from "discourse/helpers/format-date";
+import { getAbsoluteURL } from "discourse/lib/get-url";
+import { clipboardCopy } from "discourse/lib/utilities";
+import { i18n } from "discourse-i18n";
 import TopicCompactVoteControls from "./topic-compact-vote-controls";
 
 export default class TopicListThumbnail extends Component {
   @service topicThumbnails;
+  @service toasts;
 
   responsiveRatios = [1, 1.5, 2];
 
@@ -27,6 +32,11 @@ export default class TopicListThumbnail extends Component {
 
   get topic() {
     return this.args.topic;
+  }
+
+  get shareUrl() {
+    const sharePath = this.topic?.shareUrl || this.topic?.url;
+    return sharePath ? getAbsoluteURL(sharePath) : null;
   }
 
   get hasThumbnail() {
@@ -108,6 +118,33 @@ export default class TopicListThumbnail extends Component {
     return 0;
   }
 
+  @action
+  async copyTopicLink(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (!this.shareUrl) {
+      return;
+    }
+
+    try {
+      await clipboardCopy(this.shareUrl);
+      this.toasts.success({
+        duration: "short",
+        data: { message: i18n("post.controls.link_copied") },
+      });
+    } catch (error) {
+      // clipboard API already surfaces errors
+    }
+  }
+
+  @action
+  handleShareKeydown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      this.copyTopicLink(event);
+    }
+  }
+
   <template>
     {{#if this.topicThumbnails.displayCompactStyle}}
       <a
@@ -168,6 +205,15 @@ export default class TopicListThumbnail extends Component {
           <span class="topic-compact-meta__comments">
             {{this.commentsCount}}
             {{this.commentsLabel}}
+          </span>
+          <span
+            role="button"
+            tabindex="0"
+            class="topic-compact-meta__share"
+            {{on "click" this.copyTopicLink}}
+            {{on "keydown" this.handleShareKeydown}}
+          >
+            {{i18n "post.controls.share_action"}}
           </span>
         </div>
       </a>
