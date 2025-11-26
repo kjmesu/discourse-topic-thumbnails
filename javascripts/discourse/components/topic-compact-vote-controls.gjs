@@ -4,6 +4,7 @@ import { action } from "@ember/object";
 import { service } from "@ember/service";
 import routeAction from "discourse/helpers/route-action";
 import concatClass from "discourse/helpers/concat-class";
+import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { on } from "@ember/modifier";
 import TopicCompactPostVotes from "./topic-compact-post-votes";
@@ -15,11 +16,6 @@ export default class TopicCompactVoteControls extends Component {
   @tracked post;
 
   _loadedPostId = null;
-
-  constructor() {
-    super(...arguments);
-    this.loadPostForVoting();
-  }
 
   get postId() {
     return this.args.topic?.first_post_id;
@@ -106,7 +102,8 @@ export default class TopicCompactVoteControls extends Component {
     {{#if this.votingEnabledForTopic}}
       <div
         class={{this.containerClass}}
-        {{didUpdate this.loadPostForVoting @topic}}
+        {{didInsert this.loadPostForVoting}}
+        {{didUpdate this.loadPostForVoting this.postId this.categoryId}}
         {{on "click" this.stopCardNavigation}}
       >
         {{#if this.shouldRender}}
