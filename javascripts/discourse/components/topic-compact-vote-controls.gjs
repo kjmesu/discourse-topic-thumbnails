@@ -7,6 +7,7 @@ import concatClass from "discourse/helpers/concat-class";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { on } from "@ember/modifier";
+import { ajax } from "discourse/lib/ajax";
 import TopicCompactPostVotes from "./topic-compact-post-votes";
 
 export default class TopicCompactVoteControls extends Component {
@@ -16,9 +17,14 @@ export default class TopicCompactVoteControls extends Component {
   @tracked post;
 
   _loadedPostId = null;
+  _loadedTopicId = null;
 
   get postId() {
     return this.args.topic?.first_post_id;
+  }
+
+  get topic() {
+    return this.args.topic;
   }
 
   get categoryId() {
@@ -68,14 +74,7 @@ export default class TopicCompactVoteControls extends Component {
     );
   }
 
-  @action
-  async loadPostForVoting() {
-    if (!this.votingEnabledForTopic) {
-      return;
-    }
-
-    const postId = this.postId;
-
+  async _loadPostById(postId) {
     if (!postId || postId === this._loadedPostId) {
       return;
     }
@@ -87,8 +86,37 @@ export default class TopicCompactVoteControls extends Component {
       const post = await this.store.find("post", postId);
       post.topic ||= this.args.topic;
       this.post = post;
-    } catch {
+    } catch (error) {
       this.post = null;
+      this._loadedPostId = null;
+      throw error;
+    }
+  }
+
+  @action
+  async loadPostForVoting() {
+    if (!this.votingEnabledForTopic) {
+      return;
+    }
+
+    const postId = this.postId;
+
+    if (postId) {
+      return this._loadPostById(postId);
+    }
+
+    const topicId = this.topic?.id;
+    if (!topicId || topicId === this._loadedTopicId) {
+      return;
+    }
+
+    this._loadedTopicId = topicId;
+
+    try {
+      const post = await ajax(`/posts/by_number/${topicId}/1.json`);
+      await this._loadPostById(post.id);
+    } catch {
+      this._loadedTopicId = null;
     }
   }
 
@@ -103,7 +131,7 @@ export default class TopicCompactVoteControls extends Component {
       <div
         class={{this.containerClass}}
         {{didInsert this.loadPostForVoting}}
-        {{didUpdate this.loadPostForVoting this.postId this.categoryId}}
+        {{didUpdate this.loadPostForVoting this.topic?.id this.postId this.categoryId}}
         {{on "click" this.stopCardNavigation}}
       >
         {{#if this.shouldRender}}
