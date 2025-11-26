@@ -374,6 +374,17 @@
     }
   }
 
+  .topic-list-item > td {
+    display: none;
+  }
+
+  .topic-list-item > td.main-link {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+  }
+
   .bulk-select,
   .posters,
   .num.views,
