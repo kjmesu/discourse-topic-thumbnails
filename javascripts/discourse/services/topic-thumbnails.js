@@ -4,6 +4,8 @@ import Service, { service } from "@ember/service";
 import discourseComputed from "discourse/lib/decorators";
 import Site from "discourse/models/site";
 
+const SESSION_STORAGE_KEY = "topic-thumbnails-manual-modes";
+
 const minimalGridCategories = settings.minimal_grid_categories
   .split("|")
   .map((id) => parseInt(id, 10));
@@ -40,6 +42,9 @@ export default class TopicThumbnailService extends Service {
   @service discovery;
 
   @tracked masonryContainerWidth;
+  @tracked manualSelectionsVersion = 0;
+
+  manualSelections = this.#loadManualSelections();
 
   @dependentKeyCompat
   get isTopicListRoute() {
@@ -66,13 +71,31 @@ export default class TopicThumbnailService extends Service {
     return this.discovery.tag?.id;
   }
 
+  @dependentKeyCompat
+  get currentContextKey() {
+    const url = this.router.currentURL;
+    if (!url) {
+      return null;
+    }
+    return url.split("?")[0];
+  }
+
+  @discourseComputed("manualSelectionsVersion", "currentContextKey")
+  manualDisplayMode() {
+    if (!this.currentContextKey) {
+      return null;
+    }
+    return this.manualSelections?.[this.currentContextKey] || null;
+  }
+
   @discourseComputed(
     "viewingCategoryId",
     "viewingTagId",
     "router.currentRoute.metadata.customThumbnailMode",
     "isTopicListRoute",
     "isTopicRoute",
-    "isDocsRoute"
+    "isDocsRoute",
+    "manualDisplayMode"
   )
   displayMode(
     viewingCategoryId,
@@ -84,6 +107,9 @@ export default class TopicThumbnailService extends Service {
   ) {
     if (customThumbnailMode) {
       return customThumbnailMode;
+    }
+    if (this.manualDisplayMode) {
+      return this.manualDisplayMode;
     }
     if (minimalGridCategories.includes(viewingCategoryId)) {
       return "minimal-grid";
@@ -165,8 +191,97 @@ export default class TopicThumbnailService extends Service {
     return shouldDisplay && displayMode === "compact-style";
   }
 
-  @discourseComputed("displayMinimalGrid", "displayBlogStyle")
+  @discourseComputed("displayMinimalGrid")
   showLikes(isMinimalGrid) {
     return isMinimalGrid;
+  }
+
+  get availableViewModes() {
+    const allModes = [
+      "minimal-grid",
+      "grid",
+      "masonry",
+      "list",
+      "blog-style",
+      "compact-style",
+    ];
+    const settingValue = (settings.view_selector_modes || "").trim();
+    if (!settingValue) {
+      return allModes;
+    }
+
+    const allowed = settingValue
+      .split("|")
+      .map((m) => m.trim())
+      .filter(Boolean);
+
+    const filtered = allModes.filter((mode) => allowed.includes(mode));
+    return filtered.length ? filtered : allModes;
+  }
+
+  setManualDisplayMode(mode) {
+    const contextKey = this.currentContextKey;
+    if (!contextKey) {
+      return;
+    }
+    const normalizedMode = mode || null;
+    const existing = this.manualSelections?.[contextKey] || null;
+    if (existing === normalizedMode) {
+      return;
+    }
+
+    if (normalizedMode) {
+      this.manualSelections = {
+        ...this.manualSelections,
+        [contextKey]: normalizedMode,
+      };
+    } else if (this.manualSelections?.[contextKey]) {
+      const updated = { ...this.manualSelections };
+      delete updated[contextKey];
+      this.manualSelections = updated;
+    }
+    this.manualSelectionsVersion++;
+    this.#persistManualSelections();
+
+    if (typeof this.router?.refresh === "function") {
+      this.router.refresh();
+    }
+  }
+
+  #persistManualSelections() {
+    if (typeof sessionStorage === "undefined") {
+      return;
+    }
+    try {
+      sessionStorage.setItem(
+        SESSION_STORAGE_KEY,
+        JSON.stringify(this.manualSelections || {})
+      );
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to persist topic thumbnail manual selection", e);
+    }
+  }
+
+  #loadManualSelections() {
+    if (typeof sessionStorage === "undefined") {
+      return {};
+    }
+
+    try {
+      const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (!raw) {
+        return {};
+      }
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") {
+        return parsed;
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to load topic thumbnail manual selections", e);
+    }
+
+    return {};
   }
 }
