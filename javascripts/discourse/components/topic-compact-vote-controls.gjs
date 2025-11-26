@@ -11,7 +11,6 @@ import { ajax } from "discourse/lib/ajax";
 import TopicCompactPostVotes from "./topic-compact-post-votes";
 
 export default class TopicCompactVoteControls extends Component {
-  @service store;
   @service siteSettings;
 
   @tracked post;
@@ -25,6 +24,10 @@ export default class TopicCompactVoteControls extends Component {
 
   get topic() {
     return this.args.topic;
+  }
+
+  get topicId() {
+    return this.topic?.id;
   }
 
   get categoryId() {
@@ -74,6 +77,19 @@ export default class TopicCompactVoteControls extends Component {
     );
   }
 
+  _decoratePost(post) {
+    if (!post) {
+      return null;
+    }
+
+    post.topic ||= {
+      archived: this.topic?.archived,
+      closed: this.topic?.closed,
+    };
+
+    return post;
+  }
+
   async _loadPostById(postId) {
     if (!postId || postId === this._loadedPostId) {
       return;
@@ -83,12 +99,28 @@ export default class TopicCompactVoteControls extends Component {
     this.post = null;
 
     try {
-      const post = await this.store.find("post", postId);
-      post.topic ||= this.args.topic;
-      this.post = post;
+      const post = await ajax(`/posts/${postId}.json`);
+      this.post = this._decoratePost(post);
     } catch (error) {
       this.post = null;
       this._loadedPostId = null;
+      throw error;
+    }
+  }
+
+  async _loadFirstPostByTopicId(topicId) {
+    if (!topicId || topicId === this._loadedTopicId) {
+      return;
+    }
+
+    this._loadedTopicId = topicId;
+
+    try {
+      const post = await ajax(`/posts/by_number/${topicId}/1.json`);
+      this._loadedPostId = post.id;
+      this.post = this._decoratePost(post);
+    } catch (error) {
+      this._loadedTopicId = null;
       throw error;
     }
   }
@@ -99,24 +131,18 @@ export default class TopicCompactVoteControls extends Component {
       return;
     }
 
-    const postId = this.postId;
-
-    if (postId) {
-      return this._loadPostById(postId);
-    }
-
-    const topicId = this.topic?.id;
-    if (!topicId || topicId === this._loadedTopicId) {
-      return;
-    }
-
-    this._loadedTopicId = topicId;
-
     try {
-      const post = await ajax(`/posts/by_number/${topicId}/1.json`);
-      await this._loadPostById(post.id);
-    } catch {
-      this._loadedTopicId = null;
+      if (this.postId) {
+        await this._loadPostById(this.postId);
+      } else {
+        await this._loadFirstPostByTopicId(this.topicId);
+      }
+    } catch (error) {
+      console.warn("topic-compact-votes: failed to load post", {
+        topicId: this.topicId,
+        postId: this.postId,
+        error,
+      });
     }
   }
 
@@ -131,7 +157,7 @@ export default class TopicCompactVoteControls extends Component {
       <div
         class={{this.containerClass}}
         {{didInsert this.loadPostForVoting}}
-        {{didUpdate this.loadPostForVoting this.topic?.id this.postId this.categoryId}}
+        {{didUpdate this.loadPostForVoting this.topicId this.postId this.categoryId}}
         {{on "click" this.stopCardNavigation}}
       >
         {{#if this.shouldRender}}
