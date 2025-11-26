@@ -376,10 +376,6 @@
     }
   }
 
-  .topic-list-item > td {
-    display: none;
-  }
-
   .topic-list-item > td.main-link {
     display: grid;
     width: 100%;
@@ -397,6 +393,8 @@
 
   .main-link {
     grid-area: topic;
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
     padding: 0 !important;
     display: grid;
     grid-template-columns: auto 1fr;
@@ -520,6 +518,26 @@
       align-items: baseline;
       gap: 0;
     }
+  }
+
+  .topic-compact-meta {
+    grid-area: details;
+    margin-top: 0.1em;
+    font-size: var(--font-down-2-rem);
+    color: var(--primary-low-mid);
+    font-weight: bold;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
+
+  .topic-thumbnail-compact-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
   }
 
   .num.posts,
