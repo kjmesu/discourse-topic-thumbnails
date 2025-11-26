@@ -1,8 +1,9 @@
 import { action } from "@ember/object";
-import { on } from "@ember/modifier";
 import { fn } from "@ember/helper";
+import { on } from "@ember/modifier";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
+import { i18n } from "discourse-i18n";
 import PostVotesVoteControls from "discourse/plugins/discourse-post-voting-reddit-mode/discourse/components/post-votes-vote-controls";
 
 export default class TopicCompactPostVotes extends PostVotesVoteControls {
