@@ -5,6 +5,7 @@ import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import formatDate from "discourse/helpers/format-date";
+import TopicCompactVoteControls from "./topic-compact-vote-controls";
 
 export default class TopicListThumbnail extends Component {
   @service topicThumbnails;
@@ -161,10 +162,13 @@ export default class TopicListThumbnail extends Component {
           </div>
         {{/if}}
 
-        <span class="topic-compact-meta">
-          {{this.commentsCount}}
-          {{this.commentsLabel}}
-        </span>
+        <div class="topic-compact-meta">
+          <TopicCompactVoteControls @topic={{this.topic}} />
+          <span class="topic-compact-meta__comments">
+            {{this.commentsCount}}
+            {{this.commentsLabel}}
+          </span>
+        </div>
       </a>
     {{else}}
       <div
