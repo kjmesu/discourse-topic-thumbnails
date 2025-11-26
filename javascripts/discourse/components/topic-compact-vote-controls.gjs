@@ -98,6 +98,7 @@ export default class TopicCompactVoteControls extends Component {
 
   @action
   stopCardNavigation(event) {
+    event.preventDefault();
     event.stopPropagation();
   }
 
