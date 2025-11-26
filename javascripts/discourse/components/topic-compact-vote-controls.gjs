@@ -1,6 +1,8 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
+import { on } from "@ember/modifier";
+import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { service } from "@ember/service";
 import routeAction from "discourse/helpers/route-action";
 import concatClass from "discourse/helpers/concat-class";
@@ -103,7 +105,7 @@ export default class TopicCompactVoteControls extends Component {
     {{#if this.votingEnabledForTopic}}
       <div
         class={{this.containerClass}}
-        {{did-update this.loadPostForVoting @topic}}
+        {{didUpdate this.loadPostForVoting @topic}}
         {{on "click" this.stopCardNavigation}}
       >
         {{#if this.shouldRender}}
