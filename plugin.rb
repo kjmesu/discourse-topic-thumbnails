@@ -26,17 +26,22 @@ after_initialize do
 
   ::TopicListItemSerializer.include TopicListItemPostVotesSerializerExtensions
 
-  add_to_serializer(:topic_list_item, :first_post_post_votes_count) do
+  add_to_serializer(:topic_list_item, :post_votes_first_post_id) do
+    next unless SiteSetting.post_votes_enabled
+    post_votes_first_post&.id
+  end
+
+  add_to_serializer(:topic_list_item, :post_votes_first_post_count) do
     next unless SiteSetting.post_votes_enabled
     post_votes_first_post&.post_votes_score.to_i
   end
 
-  add_to_serializer(:topic_list_item, :first_post_post_votes_has_votes) do
+  add_to_serializer(:topic_list_item, :post_votes_first_post_has_votes) do
     next unless SiteSetting.post_votes_enabled
     (post_votes_first_post&.post_votes_score.to_i || 0) > 0
   end
 
-  add_to_serializer(:topic_list_item, :first_post_post_votes_user_direction) do
+  add_to_serializer(:topic_list_item, :post_votes_first_post_user_direction) do
     next unless SiteSetting.post_votes_enabled
     next unless scope&.user
     post = post_votes_first_post
