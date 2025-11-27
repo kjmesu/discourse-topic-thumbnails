@@ -689,6 +689,9 @@
     display: inline-flex;
     align-items: center;
     gap: 0.2em;
+    border: 1px solid var(--blend-primary-secondary-5);
+    padding: 3px;
+    background-color: var(--blend-primary-secondary-5);
 
     &.is-loading {
       display: none;
