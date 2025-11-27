@@ -679,9 +679,7 @@
       cursor: pointer;
       text-transform: none;
 
-      &:hover,
-      &:focus,
-      &:focus-visible {
+      &:hover {
         color: var(--primary);
         text-decoration: none;
         outline: none;
