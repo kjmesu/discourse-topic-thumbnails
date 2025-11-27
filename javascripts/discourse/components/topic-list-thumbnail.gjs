@@ -29,12 +29,14 @@ export default class TopicListThumbnail extends Component {
   @service toasts;
 
   @tracked bookmarkId;
+  @tracked isBookmarkedState = false;
   @tracked isBookmarking = false;
   responsiveRatios = [1, 1.5, 2];
 
   constructor() {
     super(...arguments);
     this.bookmarkId = this.topic?.bookmark_id;
+    this.isBookmarkedState = !!this.topic?.bookmarked;
   }
 
   get commentsLabel() {
@@ -124,7 +126,7 @@ export default class TopicListThumbnail extends Component {
   }
 
   get isBookmarked() {
-    return !!this.topic?.bookmarked;
+    return this.isBookmarkedState;
   }
 
   get saveLabel() {
@@ -217,6 +219,7 @@ export default class TopicListThumbnail extends Component {
       const savedData = await this.bookmarkApi.create(formData);
       this.bookmarkId = savedData.id;
       this.topic.bookmarked = true;
+      this.isBookmarkedState = true;
     } catch (error) {
       popupAjaxError(error);
     }
@@ -231,6 +234,7 @@ export default class TopicListThumbnail extends Component {
       }
       this.bookmarkId = null;
       this.topic.bookmarked = false;
+      this.isBookmarkedState = false;
     } catch (error) {
       popupAjaxError(error);
     }
