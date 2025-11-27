@@ -1,22 +1,40 @@
 import Component from "@glimmer/component";
-import { action } from "@ember/object";
+import EmberObject, { action } from "@ember/object";
+import { tracked } from "@glimmer/tracking";
 import { service } from "@ember/service";
 import { on } from "@ember/modifier";
+import { fn } from "@ember/helper";
 import UserInfo from "discourse/components/user-info";
 import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import formatDate from "discourse/helpers/format-date";
+import FlagModal from "discourse/components/modal/flag";
 import { getAbsoluteURL } from "discourse/lib/get-url";
 import { clipboardCopy } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
+import TopicFlag from "discourse/lib/flag-targets/topic-flag";
+import { BookmarkFormData } from "discourse/lib/bookmark-form-data";
+import { ajax } from "discourse/lib/ajax";
+import { popupAjaxError } from "discourse/lib/ajax-error";
+import Bookmark from "discourse/models/bookmark";
 import TopicCompactVoteControls from "./topic-compact-vote-controls";
 
 export default class TopicListThumbnail extends Component {
   @service topicThumbnails;
+  @service bookmarkApi;
+  @service currentUser;
+  @service modal;
   @service toasts;
 
+  @tracked bookmarkId;
+  @tracked isBookmarking = false;
   responsiveRatios = [1, 1.5, 2];
+
+  constructor() {
+    super(...arguments);
+    this.bookmarkId = this.topic?.bookmark_id;
+  }
 
   get commentsLabel() {
     return "comments";
@@ -104,6 +122,10 @@ export default class TopicListThumbnail extends Component {
     return this.topicThumbnails.displayCompactStyle && this.topic?.creator;
   }
 
+  get isBookmarked() {
+    return !!this.topic?.bookmarked;
+  }
+
   get commentsCount() {
     const replies = this.topic.reply_count;
     if (typeof replies === "number" && replies > 0) {
@@ -139,10 +161,99 @@ export default class TopicListThumbnail extends Component {
   }
 
   @action
-  handleShareKeydown(event) {
+  handleActionKeydown(callback, event) {
     if (event.key === "Enter" || event.key === " ") {
-      this.copyTopicLink(event);
+      callback.call(this, event);
     }
+  }
+
+  @action
+  async toggleSave(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (!this.currentUser) {
+      window.location = "/login";
+      return;
+    }
+
+    if (this.isBookmarking) {
+      return;
+    }
+
+    this.isBookmarking = true;
+    try {
+      if (this.isBookmarked) {
+        await this.#removeBookmark();
+      } else {
+        await this.#createBookmark();
+      }
+    } finally {
+      this.isBookmarking = false;
+    }
+  }
+
+  async #createBookmark() {
+    try {
+      const bookmark = Bookmark.createFor(
+        this.currentUser,
+        "Topic",
+        this.topic.id
+      );
+      const formData = new BookmarkFormData(bookmark);
+      const savedData = await this.bookmarkApi.create(formData);
+      this.bookmarkId = savedData.id;
+      this.topic.bookmarked = true;
+    } catch (error) {
+      popupAjaxError(error);
+    }
+  }
+
+  async #removeBookmark() {
+    try {
+      if (this.bookmarkId) {
+        await this.bookmarkApi.delete(this.bookmarkId);
+      } else {
+        await ajax(`/t/${this.topic.id}/remove_bookmarks`, { type: "PUT" });
+      }
+      this.bookmarkId = null;
+      this.topic.bookmarked = false;
+    } catch (error) {
+      popupAjaxError(error);
+    }
+  }
+
+  @action
+  async reportTopic(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    if (!this.currentUser) {
+      window.location = "/login";
+      return;
+    }
+
+    let flagModel = this.topic;
+
+    if (!flagModel?.actions_summary) {
+      try {
+        const response = await ajax(`/t/${this.topic.id}.json`);
+        flagModel = EmberObject.create(response);
+      } catch (error) {
+        popupAjaxError(error);
+        return;
+      }
+    } else {
+      flagModel = EmberObject.create(flagModel);
+    }
+
+    this.modal.show(FlagModal, {
+      model: {
+        flagTarget: new TopicFlag(),
+        flagModel,
+        setHidden: () => {},
+      },
+    });
   }
 
   <template>
@@ -211,9 +322,31 @@ export default class TopicListThumbnail extends Component {
             tabindex="0"
             class="topic-compact-meta__share"
             {{on "click" this.copyTopicLink}}
-            {{on "keydown" this.handleShareKeydown}}
+            {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
           >
             {{i18n "post.controls.share_action"}}
+          </span>
+          <span
+            role="button"
+            tabindex="0"
+            class="topic-compact-meta__action topic-compact-meta__action--save"
+            {{on "click" this.toggleSave}}
+            {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
+          >
+            {{#if this.isBookmarked}}
+              {{i18n "topic_thumbnails.actions.remove_saved"}}
+            {{else}}
+              {{i18n "topic_thumbnails.actions.save"}}
+            {{/if}}
+          </span>
+          <span
+            role="button"
+            tabindex="0"
+            class="topic-compact-meta__action topic-compact-meta__action--report"
+            {{on "click" this.reportTopic}}
+            {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
+          >
+            {{i18n "topic_thumbnails.actions.report"}}
           </span>
         </div>
       </a>

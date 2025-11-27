@@ -662,7 +662,7 @@
 
     .topic-compact-meta__comments {
       text-decoration: none;
-      word-spacing: .15em;
+      word-spacing: 0.15em;
 
       &:hover,
       &:focus {
@@ -671,6 +671,7 @@
       }
     }
 
+    .topic-compact-meta__action,
     .topic-compact-meta__share {
       display: inline-flex;
       align-items: center;
@@ -678,7 +679,9 @@
       cursor: pointer;
       text-transform: none;
 
-      &:hover {
+      &:hover,
+      &:focus,
+      &:focus-visible {
         color: var(--primary);
         text-decoration: none;
         outline: none;
