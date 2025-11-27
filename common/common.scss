@@ -488,8 +488,14 @@
     .topic-compact-author__user .name-line {
       display: inline-flex;
       gap: 0.25em;
-      font-weight: 500 !important;
+      font-weight: 500;
       font-size: var(--font-down-1-rem);
+
+      span {
+        &:first-of-type {
+          font-weight: 500;
+        }
+      }
     }
 
     .topic-compact-author__user .title,
