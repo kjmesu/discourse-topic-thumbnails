@@ -14,6 +14,7 @@ import { getAbsoluteURL } from "discourse/lib/get-url";
 import { clipboardCopy } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
 import TopicFlag from "discourse/lib/flag-targets/topic-flag";
+import { themePrefix } from "virtual:theme";
 import { BookmarkFormData } from "discourse/lib/bookmark-form-data";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
@@ -124,6 +125,18 @@ export default class TopicListThumbnail extends Component {
 
   get isBookmarked() {
     return !!this.topic?.bookmarked;
+  }
+
+  get saveLabel() {
+    return i18n(themePrefix("topic_thumbnails.actions.save"));
+  }
+
+  get removeSaveLabel() {
+    return i18n(themePrefix("topic_thumbnails.actions.remove_saved"));
+  }
+
+  get reportLabel() {
+    return i18n(themePrefix("topic_thumbnails.actions.report"));
   }
 
   get commentsCount() {
@@ -333,11 +346,7 @@ export default class TopicListThumbnail extends Component {
             {{on "click" this.toggleSave}}
             {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
           >
-            {{#if this.isBookmarked}}
-              {{i18n "topic_thumbnails.actions.remove_saved"}}
-            {{else}}
-              {{i18n "topic_thumbnails.actions.save"}}
-            {{/if}}
+            {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
           </span>
           <span
             role="button"
@@ -346,7 +355,7 @@ export default class TopicListThumbnail extends Component {
             {{on "click" this.reportTopic}}
             {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
           >
-            {{i18n "topic_thumbnails.actions.report"}}
+            {{this.reportLabel}}
           </span>
         </div>
       </a>
