@@ -658,11 +658,12 @@
     font-weight: bold;
     display: inline-flex;
     align-items: center;
-    gap: 2em;
+    gap: 3em;
 
     .topic-compact-meta__comments {
       text-decoration: none;
       word-spacing: 0.15em;
+      margin-left: -1.5em;
 
       &:hover,
       &:focus {
