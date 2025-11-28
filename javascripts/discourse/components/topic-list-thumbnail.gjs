@@ -19,6 +19,7 @@ import { BookmarkFormData } from "discourse/lib/bookmark-form-data";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import Bookmark from "discourse/models/bookmark";
+import TopicCompactVoteControls from "./topic-compact-vote-controls";
 
 export default class TopicListThumbnail extends Component {
   @service topicThumbnails;
@@ -328,6 +329,7 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
 
         <div class="topic-compact-meta">
+          <TopicCompactVoteControls @topic={{this.topic}} />
           <span class="topic-compact-meta__comments">
             {{this.commentsCount}}
             {{this.commentsLabel}}
