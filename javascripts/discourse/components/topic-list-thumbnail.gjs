@@ -38,6 +38,7 @@ export default class TopicListThumbnail extends Component {
   @tracked isBookmarking = false;
   @tracked isCompactOverflowOpen = false;
   #overflowListener;
+  #compactOverflowMenu;
 
   responsiveRatios = [1, 1.5, 2];
 
@@ -48,7 +49,7 @@ export default class TopicListThumbnail extends Component {
     this.#overflowListener = (event) => {
       const detail = event?.detail;
       if (detail !== this.#compactOverflowKey()) {
-        this.isCompactOverflowOpen = false;
+        this.closeOverflowMenus();
       }
     };
     window.addEventListener(OVERFLOW_EVENT, this.#overflowListener);
@@ -318,6 +319,7 @@ export default class TopicListThumbnail extends Component {
 
   closeOverflowMenus() {
     this.isCompactOverflowOpen = false;
+    this.#compactOverflowMenu?.close?.();
   }
 
   @action
@@ -336,6 +338,22 @@ export default class TopicListThumbnail extends Component {
   overflowReport(event) {
     this.reportTopic(event);
     this.closeOverflowMenus();
+  }
+
+  @action
+  registerCompactOverflowMenu(menu) {
+    this.#compactOverflowMenu = menu;
+  }
+
+  @action
+  handleCompactOverflowShow() {
+    this.isCompactOverflowOpen = true;
+    this.#announceCompactOverflow();
+  }
+
+  @action
+  handleCompactOverflowClose() {
+    this.isCompactOverflowOpen = false;
   }
 
   <template>
@@ -537,6 +555,9 @@ export default class TopicListThumbnail extends Component {
             @triggerClass="topic-compact-meta__overflow"
             @contentClass="topic-compact-meta__overflow-menu"
             @modalForMobile={{true}}
+            @onRegisterApi={{this.registerCompactOverflowMenu}}
+            @onShow={{this.handleCompactOverflowShow}}
+            @onClose={{this.handleCompactOverflowClose}}
           >
             <:content>
               <DropdownMenu as |dropdown|>
