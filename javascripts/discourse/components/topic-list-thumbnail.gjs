@@ -21,6 +21,8 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 import Bookmark from "discourse/models/bookmark";
 import TopicVoteControls from "./topic-vote-controls";
 
+const OVERFLOW_EVENT = "topic-thumbnails:overflow-open";
+
 export default class TopicListThumbnail extends Component {
   topicVoteControlsComponent = TopicVoteControls;
   @service topicThumbnails;
@@ -41,6 +43,21 @@ export default class TopicListThumbnail extends Component {
     super(...arguments);
     this.bookmarkId = this.topic?.bookmark_id;
     this.isBookmarkedState = !!this.topic?.bookmarked;
+    this.#overflowListener = (event) => {
+      const detail = event?.detail;
+      if (detail !== this.#cardOverflowKey()) {
+        this.isCardOverflowOpen = false;
+      }
+      if (detail !== this.#compactOverflowKey()) {
+        this.isCompactOverflowOpen = false;
+      }
+    };
+    window.addEventListener(OVERFLOW_EVENT, this.#overflowListener);
+  }
+
+  willDestroy() {
+    super.willDestroy?.();
+    window.removeEventListener(OVERFLOW_EVENT, this.#overflowListener);
   }
 
   get commentsLabel() {
@@ -144,6 +161,18 @@ export default class TopicListThumbnail extends Component {
 
   get reportLabel() {
     return i18n(themePrefix("topic_thumbnails.actions.report"));
+  }
+
+  #cardOverflowKey() {
+    return `card-${this.topic?.id ?? "unknown"}`;
+  }
+
+  #compactOverflowKey() {
+    return `compact-${this.topic?.id ?? "unknown"}`;
+  }
+
+  #announceOverflow(key) {
+    window.dispatchEvent(new CustomEvent(OVERFLOW_EVENT, { detail: key }));
   }
 
   get commentsCount() {
@@ -282,9 +311,11 @@ export default class TopicListThumbnail extends Component {
   toggleCardOverflow(event) {
     event?.preventDefault();
     event?.stopPropagation();
-    this.isCardOverflowOpen = !this.isCardOverflowOpen;
-    if (this.isCardOverflowOpen) {
-      this.isCompactOverflowOpen = false;
+    const willOpen = !this.isCardOverflowOpen;
+    this.closeOverflowMenus();
+    if (willOpen) {
+      this.isCardOverflowOpen = true;
+      this.#announceOverflow(this.#cardOverflowKey());
     }
   }
 
@@ -292,9 +323,11 @@ export default class TopicListThumbnail extends Component {
   toggleCompactOverflow(event) {
     event?.preventDefault();
     event?.stopPropagation();
-    this.isCompactOverflowOpen = !this.isCompactOverflowOpen;
-    if (this.isCompactOverflowOpen) {
-      this.isCardOverflowOpen = false;
+    const willOpen = !this.isCompactOverflowOpen;
+    this.closeOverflowMenus();
+    if (willOpen) {
+      this.isCompactOverflowOpen = true;
+      this.#announceOverflow(this.#compactOverflowKey());
     }
   }
 
