@@ -553,44 +553,45 @@ export default class TopicListThumbnail extends Component {
             @icon="ellipsis"
             @ariaLabel={{i18n "topic_thumbnails.actions.more_actions"}}
             @triggerClass="topic-compact-meta__overflow"
-            @contentClass="topic-compact-meta__overflow-menu"
             @modalForMobile={{true}}
             @onRegisterApi={{this.registerCompactOverflowMenu}}
             @onShow={{this.handleCompactOverflowShow}}
             @onClose={{this.handleCompactOverflowClose}}
           >
             <:content>
-              <DropdownMenu as |dropdown|>
-                <dropdown.item>
-                  <button
-                    type="button"
-                    class="topic-compact-meta__overflow-item"
-                    {{on "click" this.overflowShare}}
-                  >
-                    {{dIcon "share"}}
-                    {{i18n "post.controls.share_action"}}
-                  </button>
-                </dropdown.item>
-                <dropdown.item>
-                  <button
-                    type="button"
-                    class="topic-compact-meta__overflow-item"
-                    {{on "click" this.overflowSave}}
-                  >
-                    {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
-                  </button>
-                </dropdown.item>
-                <dropdown.item>
-                  <button
-                    type="button"
-                    class="topic-compact-meta__overflow-item"
-                    {{on "click" this.overflowReport}}
-                  >
-                    {{dIcon "flag"}}
-                    {{this.reportLabel}}
-                  </button>
-                </dropdown.item>
-              </DropdownMenu>
+              <div class="topic-compact-meta__overflow-menu">
+                <DropdownMenu as |dropdown|>
+                  <dropdown.item>
+                    <button
+                      type="button"
+                      class="topic-compact-meta__overflow-item"
+                      {{on "click" this.overflowShare}}
+                    >
+                      {{dIcon "share"}}
+                      {{i18n "post.controls.share_action"}}
+                    </button>
+                  </dropdown.item>
+                  <dropdown.item>
+                    <button
+                      type="button"
+                      class="topic-compact-meta__overflow-item"
+                      {{on "click" this.overflowSave}}
+                    >
+                      {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
+                    </button>
+                  </dropdown.item>
+                  <dropdown.item>
+                    <button
+                      type="button"
+                      class="topic-compact-meta__overflow-item"
+                      {{on "click" this.overflowReport}}
+                    >
+                      {{dIcon "flag"}}
+                      {{this.reportLabel}}
+                    </button>
+                  </dropdown.item>
+                </DropdownMenu>
+              </div>
             </:content>
           </DMenu>
         </div>

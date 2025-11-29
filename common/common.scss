@@ -994,7 +994,15 @@
   background-color: var(--secondary);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   padding: 0.35em;
-  z-index: 5;
+}
+
+.fk-d-menu-modal .topic-compact-meta__overflow-menu {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
 .topic-compact-meta__overflow-item {
