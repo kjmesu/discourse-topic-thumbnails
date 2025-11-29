@@ -36,6 +36,7 @@ export default class TopicListThumbnail extends Component {
   @tracked isBookmarking = false;
   @tracked isCardOverflowOpen = false;
   @tracked isCompactOverflowOpen = false;
+  #overflowListener;
 
   responsiveRatios = [1, 1.5, 2];
 
