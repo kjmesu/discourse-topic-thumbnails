@@ -958,14 +958,13 @@
 .topic-card__meta,
 .topic-compact-meta {
   position: relative;
-  gap: 0.75em;
 }
 
 .topic-card__meta-actions,
 .topic-compact-meta__actions {
   display: inline-flex;
   align-items: center;
-  gap: 0.75em;
+  gap: 2em;
 }
 
 .topic-compact-meta__overflow {
