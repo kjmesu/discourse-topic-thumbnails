@@ -173,6 +173,10 @@ export default class TopicListThumbnail extends Component {
     );
   }
 
+  get compactOverflowIdentifier() {
+    return this.#compactOverflowKey();
+  }
+
   get commentsCount() {
     const replies = this.topic.reply_count;
     if (typeof replies === "number" && replies > 0) {
@@ -319,7 +323,7 @@ export default class TopicListThumbnail extends Component {
 
   closeOverflowMenus() {
     this.isCompactOverflowOpen = false;
-    this.#compactOverflowMenu?.close?.();
+    this.#compactOverflowMenu?.close?.({ focusTrigger: false });
   }
 
   @action
@@ -549,7 +553,7 @@ export default class TopicListThumbnail extends Component {
             </span>
           </div>
           <DMenu
-            @identifier="topic-compact-overflow"
+            @identifier={{this.compactOverflowIdentifier}}
             @icon="ellipsis"
             @ariaLabel={{i18n "topic_thumbnails.actions.more_actions"}}
             @triggerClass="topic-compact-meta__overflow"
