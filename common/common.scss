@@ -988,8 +988,8 @@
 .topic-card__meta-overflow-menu,
 .topic-compact-meta__overflow-menu {
   position: absolute;
-  right: 0;
-  top: calc(100% + 0.35em);
+  right: 11%;
+  top: 100%;
   min-width: 180px;
   border-radius: 0.5em;
   border: 1px solid var(--primary-low);
