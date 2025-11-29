@@ -443,8 +443,7 @@ export default class TopicListThumbnail extends Component {
         </div>
       </article>
     {{else if this.topicThumbnails.displayCompactStyle}}
-      <a
-        href={{this.url}}
+      <div
         class="topic-thumbnail-compact-link"
         aria-label={{this.topic.title}}
       >
@@ -574,7 +573,7 @@ export default class TopicListThumbnail extends Component {
             </:content>
           </DMenu>
         </div>
-      </a>
+      </div>
     {{else}}
       <div
         class={{concatClass
