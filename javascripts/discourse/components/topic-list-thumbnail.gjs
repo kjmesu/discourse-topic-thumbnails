@@ -32,6 +32,8 @@ export default class TopicListThumbnail extends Component {
   @tracked bookmarkId;
   @tracked isBookmarkedState = false;
   @tracked isBookmarking = false;
+  @tracked isCardOverflowOpen = false;
+  @tracked isCompactOverflowOpen = false;
 
   responsiveRatios = [1, 1.5, 2];
 
@@ -276,6 +278,49 @@ export default class TopicListThumbnail extends Component {
     });
   }
 
+  @action
+  toggleCardOverflow(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.isCardOverflowOpen = !this.isCardOverflowOpen;
+    if (this.isCardOverflowOpen) {
+      this.isCompactOverflowOpen = false;
+    }
+  }
+
+  @action
+  toggleCompactOverflow(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+    this.isCompactOverflowOpen = !this.isCompactOverflowOpen;
+    if (this.isCompactOverflowOpen) {
+      this.isCardOverflowOpen = false;
+    }
+  }
+
+  closeOverflowMenus() {
+    this.isCardOverflowOpen = false;
+    this.isCompactOverflowOpen = false;
+  }
+
+  @action
+  overflowShare(event) {
+    this.copyTopicLink(event);
+    this.closeOverflowMenus();
+  }
+
+  @action
+  overflowSave(event) {
+    this.toggleSave(event);
+    this.closeOverflowMenus();
+  }
+
+  @action
+  overflowReport(event) {
+    this.reportTopic(event);
+    this.closeOverflowMenus();
+  }
+
   <template>
     {{#if this.topicThumbnails.displayCardStyle}}
       <article class="topic-card">
@@ -344,38 +389,79 @@ export default class TopicListThumbnail extends Component {
             {{dIcon "far-comment"}}
             {{this.commentsCount}}
           </a>
-          <span
-            role="button"
-            tabindex="0"
-            class="topic-card__meta-action topic-meta__action"
-            {{on "click" this.copyTopicLink}}
-            {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
+          <div class="topic-card__meta-actions topic-meta__actions">
+            <span
+              role="button"
+              tabindex="0"
+              class="topic-card__meta-action topic-meta__action"
+              {{on "click" this.copyTopicLink}}
+              {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
+            >
+              {{dIcon "share"}}
+              {{i18n "post.controls.share_action"}}
+            </span>
+            <span
+              role="button"
+              tabindex="0"
+              class="topic-card__meta-action topic-meta__action"
+              {{on "click" this.toggleSave}}
+              {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
+            >
+              {{#if this.isBookmarked}}
+                {{dIcon "bookmark"}}
+              {{else}}
+                {{dIcon "far-bookmark"}}
+              {{/if}}
+            </span>
+            <span
+              role="button"
+              tabindex="0"
+              class="topic-card__meta-action topic-meta__action"
+              {{on "click" this.reportTopic}}
+              {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
+            >
+              {{dIcon "flag"}}
+            </span>
+          </div>
+          <button
+            type="button"
+            class="topic-card__meta-overflow"
+            aria-label={{i18n "topic_thumbnails.actions.more_actions"}}
+            {{on "click" this.toggleCardOverflow}}
           >
-            {{dIcon "share"}}
-            {{i18n "post.controls.share_action"}}
-          </span>
-          <span
-            role="button"
-            tabindex="0"
-            class="topic-card__meta-action topic-meta__action"
-            {{on "click" this.toggleSave}}
-            {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
-          >
-            {{#if this.isBookmarked}}
-              {{dIcon "bookmark"}}
-            {{else}}
-              {{dIcon "far-bookmark"}}
-            {{/if}}
-          </span>
-          <span
-            role="button"
-            tabindex="0"
-            class="topic-card__meta-action topic-meta__action"
-            {{on "click" this.reportTopic}}
-            {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
-          >
-            {{dIcon "flag"}}
-          </span>
+            {{dIcon "ellipsis-h"}}
+          </button>
+          {{#if this.isCardOverflowOpen}}
+            <div class="topic-card__meta-overflow-menu">
+              <button
+                type="button"
+                class="topic-card__meta-overflow-item"
+                {{on "click" this.overflowShare}}
+              >
+                {{dIcon "share"}}
+                {{i18n "post.controls.share_action"}}
+              </button>
+              <button
+                type="button"
+                class="topic-card__meta-overflow-item"
+                {{on "click" this.overflowSave}}
+              >
+                {{#if this.isBookmarked}}
+                  {{dIcon "bookmark"}}
+                {{else}}
+                  {{dIcon "far-bookmark"}}
+                {{/if}}
+              </button>
+              <button
+                type="button"
+                class="topic-card__meta-overflow-item"
+                {{on "click" this.overflowReport}}
+              >
+                {{dIcon "flag"}}
+                {{this.reportLabel}}
+              </button>
+            </div>
+          {{/if}}
         </div>
       </article>
     {{else if this.topicThumbnails.displayCompactStyle}}
@@ -438,33 +524,70 @@ export default class TopicListThumbnail extends Component {
             {{this.commentsCount}}
             {{this.commentsLabel}}
           </span>
-          <span
-            role="button"
-            tabindex="0"
-            class="topic-compact-meta__share topic-meta__action"
-            {{on "click" this.copyTopicLink}}
-            {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
+          <div class="topic-compact-meta__actions topic-meta__actions">
+            <span
+              role="button"
+              tabindex="0"
+              class="topic-compact-meta__share topic-meta__action"
+              {{on "click" this.copyTopicLink}}
+              {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
+            >
+              {{i18n "post.controls.share_action"}}
+            </span>
+            <span
+              role="button"
+              tabindex="0"
+              class="topic-compact-meta__action topic-compact-meta__action--save topic-meta__action"
+              {{on "click" this.toggleSave}}
+              {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
+            >
+              {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
+            </span>
+            <span
+              role="button"
+              tabindex="0"
+              class="topic-compact-meta__action topic-compact-meta__action--report topic-meta__action"
+              {{on "click" this.reportTopic}}
+              {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
+            >
+              {{this.reportLabel}}
+            </span>
+          </div>
+          <button
+            type="button"
+            class="topic-compact-meta__overflow"
+            aria-label={{i18n "topic_thumbnails.actions.more_actions"}}
+            {{on "click" this.toggleCompactOverflow}}
           >
-            {{i18n "post.controls.share_action"}}
-          </span>
-          <span
-            role="button"
-            tabindex="0"
-            class="topic-compact-meta__action topic-compact-meta__action--save topic-meta__action"
-            {{on "click" this.toggleSave}}
-            {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
-          >
-            {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
-          </span>
-          <span
-            role="button"
-            tabindex="0"
-            class="topic-compact-meta__action topic-compact-meta__action--report topic-meta__action"
-            {{on "click" this.reportTopic}}
-            {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
-          >
-            {{this.reportLabel}}
-          </span>
+            {{dIcon "ellipsis-h"}}
+          </button>
+          {{#if this.isCompactOverflowOpen}}
+            <div class="topic-compact-meta__overflow-menu">
+              <button
+                type="button"
+                class="topic-compact-meta__overflow-item"
+                {{on "click" this.overflowShare}}
+              >
+                {{dIcon "share"}}
+                {{i18n "post.controls.share_action"}}
+              </button>
+              <button
+                type="button"
+                class="topic-compact-meta__overflow-item"
+                {{on "click" this.overflowSave}}
+              >
+                {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
+              </button>
+              <button
+                type="button"
+                class="topic-compact-meta__overflow-item"
+                {{on "click" this.overflowReport}}
+              >
+                {{dIcon "flag"}}
+                {{this.reportLabel}}
+              </button>
+            </div>
+          {{/if}}
         </div>
       </a>
     {{else}}
