@@ -429,7 +429,7 @@ export default class TopicListThumbnail extends Component {
             aria-label={{i18n "topic_thumbnails.actions.more_actions"}}
             {{on "click" this.toggleCardOverflow}}
           >
-            {{dIcon "ellipsis-h"}}
+            {{dIcon "ellipsis"}}
           </button>
           {{#if this.isCardOverflowOpen}}
             <div class="topic-card__meta-overflow-menu">
@@ -559,7 +559,7 @@ export default class TopicListThumbnail extends Component {
             aria-label={{i18n "topic_thumbnails.actions.more_actions"}}
             {{on "click" this.toggleCompactOverflow}}
           >
-            {{dIcon "ellipsis-h"}}
+            {{dIcon "ellipsis"}}
           </button>
           {{#if this.isCompactOverflowOpen}}
             <div class="topic-compact-meta__overflow-menu">
