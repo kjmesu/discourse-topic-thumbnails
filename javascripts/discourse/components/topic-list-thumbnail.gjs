@@ -34,7 +34,6 @@ export default class TopicListThumbnail extends Component {
   @tracked bookmarkId;
   @tracked isBookmarkedState = false;
   @tracked isBookmarking = false;
-  @tracked isCardOverflowOpen = false;
   @tracked isCompactOverflowOpen = false;
   #overflowListener;
 
@@ -46,9 +45,6 @@ export default class TopicListThumbnail extends Component {
     this.isBookmarkedState = !!this.topic?.bookmarked;
     this.#overflowListener = (event) => {
       const detail = event?.detail;
-      if (detail !== this.#cardOverflowKey()) {
-        this.isCardOverflowOpen = false;
-      }
       if (detail !== this.#compactOverflowKey()) {
         this.isCompactOverflowOpen = false;
       }
@@ -164,16 +160,14 @@ export default class TopicListThumbnail extends Component {
     return i18n(themePrefix("topic_thumbnails.actions.report"));
   }
 
-  #cardOverflowKey() {
-    return `card-${this.topic?.id ?? "unknown"}`;
-  }
-
   #compactOverflowKey() {
     return `compact-${this.topic?.id ?? "unknown"}`;
   }
 
-  #announceOverflow(key) {
-    window.dispatchEvent(new CustomEvent(OVERFLOW_EVENT, { detail: key }));
+  #announceCompactOverflow() {
+    window.dispatchEvent(
+      new CustomEvent(OVERFLOW_EVENT, { detail: this.#compactOverflowKey() })
+    );
   }
 
   get commentsCount() {
@@ -309,18 +303,6 @@ export default class TopicListThumbnail extends Component {
   }
 
   @action
-  toggleCardOverflow(event) {
-    event?.preventDefault();
-    event?.stopPropagation();
-    const willOpen = !this.isCardOverflowOpen;
-    this.closeOverflowMenus();
-    if (willOpen) {
-      this.isCardOverflowOpen = true;
-      this.#announceOverflow(this.#cardOverflowKey());
-    }
-  }
-
-  @action
   toggleCompactOverflow(event) {
     event?.preventDefault();
     event?.stopPropagation();
@@ -328,12 +310,11 @@ export default class TopicListThumbnail extends Component {
     this.closeOverflowMenus();
     if (willOpen) {
       this.isCompactOverflowOpen = true;
-      this.#announceOverflow(this.#compactOverflowKey());
+      this.#announceCompactOverflow();
     }
   }
 
   closeOverflowMenus() {
-    this.isCardOverflowOpen = false;
     this.isCompactOverflowOpen = false;
   }
 
@@ -457,45 +438,6 @@ export default class TopicListThumbnail extends Component {
               {{dIcon "flag"}}
             </span>
           </div>
-          <button
-            type="button"
-            class="topic-card__meta-overflow"
-            aria-label={{i18n "topic_thumbnails.actions.more_actions"}}
-            {{on "click" this.toggleCardOverflow}}
-          >
-            {{dIcon "ellipsis"}}
-          </button>
-          {{#if this.isCardOverflowOpen}}
-            <div class="topic-card__meta-overflow-menu">
-              <button
-                type="button"
-                class="topic-card__meta-overflow-item"
-                {{on "click" this.overflowShare}}
-              >
-                {{dIcon "share"}}
-                {{i18n "post.controls.share_action"}}
-              </button>
-              <button
-                type="button"
-                class="topic-card__meta-overflow-item"
-                {{on "click" this.overflowSave}}
-              >
-                {{#if this.isBookmarked}}
-                  {{dIcon "bookmark"}}
-                {{else}}
-                  {{dIcon "far-bookmark"}}
-                {{/if}}
-              </button>
-              <button
-                type="button"
-                class="topic-card__meta-overflow-item"
-                {{on "click" this.overflowReport}}
-              >
-                {{dIcon "flag"}}
-                {{this.reportLabel}}
-              </button>
-            </div>
-          {{/if}}
         </div>
       </article>
     {{else if this.topicThumbnails.displayCompactStyle}}
