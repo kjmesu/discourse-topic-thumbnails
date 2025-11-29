@@ -4,6 +4,7 @@ import { tracked } from "@glimmer/tracking";
 import { service } from "@ember/service";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
+import DropdownMenu from "discourse/components/dropdown-menu";
 import UserInfo from "discourse/components/user-info";
 import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
@@ -20,6 +21,7 @@ import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import Bookmark from "discourse/models/bookmark";
 import TopicVoteControls from "./topic-vote-controls";
+import DMenu from "discourse/float-kit/components/d-menu";
 
 const OVERFLOW_EVENT = "topic-thumbnails:overflow-open";
 
@@ -529,41 +531,48 @@ export default class TopicListThumbnail extends Component {
               {{this.reportLabel}}
             </span>
           </div>
-          <button
-            type="button"
-            class="topic-compact-meta__overflow"
-            aria-label={{i18n "topic_thumbnails.actions.more_actions"}}
-            {{on "click" this.toggleCompactOverflow}}
+          <DMenu
+            @identifier="topic-compact-overflow"
+            @icon="ellipsis"
+            @ariaLabel={{i18n "topic_thumbnails.actions.more_actions"}}
+            @triggerClass="topic-compact-meta__overflow"
+            @contentClass="topic-compact-meta__overflow-menu"
+            @modalForMobile={{true}}
           >
-            {{dIcon "ellipsis"}}
-          </button>
-          {{#if this.isCompactOverflowOpen}}
-            <div class="topic-compact-meta__overflow-menu">
-              <button
-                type="button"
-                class="topic-compact-meta__overflow-item"
-                {{on "click" this.overflowShare}}
-              >
-                {{dIcon "share"}}
-                {{i18n "post.controls.share_action"}}
-              </button>
-              <button
-                type="button"
-                class="topic-compact-meta__overflow-item"
-                {{on "click" this.overflowSave}}
-              >
-                {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
-              </button>
-              <button
-                type="button"
-                class="topic-compact-meta__overflow-item"
-                {{on "click" this.overflowReport}}
-              >
-                {{dIcon "flag"}}
-                {{this.reportLabel}}
-              </button>
-            </div>
-          {{/if}}
+            <:content>
+              <DropdownMenu as |dropdown|>
+                <dropdown.item>
+                  <button
+                    type="button"
+                    class="topic-compact-meta__overflow-item"
+                    {{on "click" this.overflowShare}}
+                  >
+                    {{dIcon "share"}}
+                    {{i18n "post.controls.share_action"}}
+                  </button>
+                </dropdown.item>
+                <dropdown.item>
+                  <button
+                    type="button"
+                    class="topic-compact-meta__overflow-item"
+                    {{on "click" this.overflowSave}}
+                  >
+                    {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
+                  </button>
+                </dropdown.item>
+                <dropdown.item>
+                  <button
+                    type="button"
+                    class="topic-compact-meta__overflow-item"
+                    {{on "click" this.overflowReport}}
+                  >
+                    {{dIcon "flag"}}
+                    {{this.reportLabel}}
+                  </button>
+                </dropdown.item>
+              </DropdownMenu>
+            </:content>
+          </DMenu>
         </div>
       </a>
     {{else}}
