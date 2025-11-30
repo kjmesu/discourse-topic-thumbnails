@@ -184,7 +184,8 @@
 .topic-thumbnails-card-style,
 .topic-thumbnails-compact-style {
   .topic-compact-author__activity {
-    font-size: var(--font-down-1-rem);
+    font-size: var(--font-down-1-rem) !important;
+    line-height: var(--line-height-medium);
 
     .relative-date {
       font-size: inherit !important;
@@ -194,11 +195,5 @@
 
   .topic-author__category {
     display: none;
-  }
-
-  .topic-card__activity .relative-date,
-  .topic-compact-author__activity .relative-date {
-    font-size: var(--font-down-1-rem) !important;
-    line-height: var(--line-height-small) !important;
   }
 }
