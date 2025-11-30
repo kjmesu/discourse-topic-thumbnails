@@ -528,6 +528,7 @@
     gap: 0.25em;
     color: currentColor;
     font-size: inherit;
+    line-height: inherit;
 
     &::before {
       content: "•";
@@ -535,11 +536,11 @@
       margin: 0 0.15em 0 0.35em;
       font-weight: 100;
     }
+  }
 
-    .relative-date {
-      font-size: inherit;
-      line-height: inherit;
-    }
+  .topic-author__activity .relative-date {
+    font-size: inherit !important;
+    line-height: inherit !important;
   }
 
   .topic-author__activity,
@@ -558,13 +559,11 @@
     color: currentColor;
     font-weight: 500;
 
-    .badge-category {
-      margin: 0;
-      font-size: inherit;
-    }
-
+    .badge-category,
     .badge-category__name {
-      font-size: inherit;
+      margin: 0;
+      font-size: inherit !important;
+      line-height: inherit;
     }
 
     &::before {

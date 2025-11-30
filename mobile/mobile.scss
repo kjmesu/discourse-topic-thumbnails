@@ -147,7 +147,15 @@
   .topic-card__author,
   .topic-compact-author {
     .relative-date {
-      font-size: inherit;
+      font-size: inherit !important;
+      line-height: inherit !important;
+    }
+  }
+
+  .topic-author__category {
+    .badge-category,
+    .badge-category__name {
+      font-size: inherit !important;
       line-height: inherit;
     }
   }
