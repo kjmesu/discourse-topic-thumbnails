@@ -142,4 +142,11 @@
 
 .topic-author {
   font-size: var(--font-down-1-rem);
+
+  .topic-author__activity {
+    .relative-date {
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
 }
