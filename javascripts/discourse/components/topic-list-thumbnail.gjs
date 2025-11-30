@@ -375,7 +375,9 @@ export default class TopicListThumbnail extends Component {
                 class="topic-card__author-user topic-author__user"
               />
               <span class="topic-card__activity topic-author__activity">
-                {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+                <span class="topic-author__relative-date">
+                  {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+                </span>
                 ago
               </span>
               {{#if this.topic.category}}
@@ -517,7 +519,9 @@ export default class TopicListThumbnail extends Component {
               class="topic-compact-author__user topic-author__user"
             />
             <span class="topic-compact-author__activity topic-author__activity">
-              {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+              <span class="topic-author__relative-date">
+                {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+              </span>
               ago
             </span>
             {{#if this.topic.category}}

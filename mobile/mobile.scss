@@ -149,7 +149,7 @@
   }
 }
 
-.topic-author {
+  .topic-author {
   font-size: var(--font-down-1-rem);
 
   .topic-author__activity,
@@ -159,6 +159,11 @@
       font-size: inherit !important;
       line-height: inherit !important;
     }
+  }
+
+  .topic-author__relative-date .relative-date {
+    font-size: inherit !important;
+    line-height: inherit !important;
   }
 
   .topic-author__category {
