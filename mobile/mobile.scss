@@ -183,6 +183,11 @@
 
 .topic-thumbnails-card-style,
 .topic-thumbnails-compact-style {
+  span.relative-date {
+    font-size: var(--font-down-1-rem) !important;
+    line-height: var(--line-height-medium);
+  }
+
   .topic-compact-author__activity {
     font-size: var(--font-down-1-rem) !important;
     line-height: var(--line-height-medium);
