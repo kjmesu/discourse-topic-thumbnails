@@ -147,6 +147,10 @@ export default class TopicListThumbnail extends Component {
     return this.topicThumbnails.displayCompactStyle && this.topic?.creator;
   }
 
+  get showCategory() {
+    return !this.topicThumbnails.isViewingCategory && this.topic?.category;
+  }
+
   get isBookmarked() {
     return this.isBookmarkedState;
   }
@@ -402,7 +406,7 @@ export default class TopicListThumbnail extends Component {
                 </span>
                 ago
               </span>
-              {{#if this.topic.category}}
+              {{#if this.showCategory}}
                 <span class="topic-card__category topic-author__category">
                   {{categoryLink this.topic.category}}
                 </span>
@@ -536,7 +540,7 @@ export default class TopicListThumbnail extends Component {
               </span>
               ago
             </span>
-            {{#if this.topic.category}}
+            {{#if this.showCategory}}
               <span class="topic-compact-author__category topic-author__category">
                 {{categoryLink this.topic.category}}
               </span>
