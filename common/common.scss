@@ -527,12 +527,18 @@
     align-items: center;
     gap: 0.25em;
     color: currentColor;
+    font-size: inherit;
 
     &::before {
       content: "•";
       color: var(--primary-low-mid);
       margin: 0 0.15em 0 0.35em;
       font-weight: 100;
+    }
+
+    .relative-date {
+      font-size: inherit;
+      line-height: inherit;
     }
   }
 
