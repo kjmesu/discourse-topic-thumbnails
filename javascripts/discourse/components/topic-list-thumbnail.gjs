@@ -8,7 +8,7 @@ import DropdownMenu from "discourse/components/dropdown-menu";
 import UserInfo from "discourse/components/user-info";
 import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
-import boundCategoryLink from "discourse/helpers/bound-category-link";
+import categoryBadge from "discourse/helpers/category-badge";
 import dIcon from "discourse/helpers/d-icon";
 import formatDate from "discourse/helpers/format-date";
 import FlagModal from "discourse/components/modal/flag";
@@ -380,11 +380,7 @@ export default class TopicListThumbnail extends Component {
               </span>
               {{#if this.topic.category}}
                 <span class="topic-card__category topic-author__category">
-                  {{boundCategoryLink
-                    this.topic.category
-                    hideParent=true
-                    ancestors=this.topic.category.predecessors
-                  }}
+                  {{categoryBadge this.topic.category hideParent=true link=true}}
                 </span>
               {{/if}}
             </div>
@@ -526,11 +522,7 @@ export default class TopicListThumbnail extends Component {
             </span>
             {{#if this.topic.category}}
               <span class="topic-compact-author__category topic-author__category">
-                {{boundCategoryLink
-                  this.topic.category
-                  hideParent=true
-                  ancestors=this.topic.category.predecessors
-                }}
+                {{categoryBadge this.topic.category hideParent=true link=true}}
               </span>
             {{/if}}
           </div>
