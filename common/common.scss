@@ -543,6 +543,11 @@
     color: currentColor;
     font-weight: 500;
 
+    .badge-category {
+      margin: 0;
+      font-size: inherit;
+    }
+
     &::before {
       content: "•";
       color: var(--primary-low-mid);
