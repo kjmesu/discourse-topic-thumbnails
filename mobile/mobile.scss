@@ -126,7 +126,7 @@
   }
 
   .topic-card__activity {
-    font-size: var(--font-down-1-rem);
+    font-size: var(--font-down-2-rem);
 
     .relative-date {
       font-size: inherit !important;
@@ -151,7 +151,7 @@
 
 
 .topic-author {
-  font-size: var(--font-down-1-rem);
+  font-size: var(--font-down-2-rem);
 
   .topic-author__activity,
   .topic-card__activity,
@@ -189,7 +189,7 @@
 .topic-thumbnails-compact-style {
   .topic-card__activity,
   .topic-compact-author__activity {
-    font-size: var(--font-down-1-rem) !important;
+    font-size: var(--font-down-2-rem) !important;
     line-height: var(--line-height-medium);
   }
 
