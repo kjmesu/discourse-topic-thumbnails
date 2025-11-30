@@ -542,6 +542,15 @@
     }
   }
 
+  .topic-author__activity,
+  .topic-card__author,
+  .topic-compact-author {
+    .relative-date {
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+
   .topic-author__category {
     display: inline-flex;
     align-items: center;
@@ -551,6 +560,10 @@
 
     .badge-category {
       margin: 0;
+      font-size: inherit;
+    }
+
+    .badge-category__name {
       font-size: inherit;
     }
 

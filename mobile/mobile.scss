@@ -143,7 +143,9 @@
 .topic-author {
   font-size: var(--font-down-1-rem);
 
-  .topic-author__activity {
+  .topic-author__activity,
+  .topic-card__author,
+  .topic-compact-author {
     .relative-date {
       font-size: inherit;
       line-height: inherit;
