@@ -125,6 +125,15 @@
     align-items: center;
   }
 
+  .topic-card__activity {
+    font-size: var(--font-down-1-rem);
+
+    .relative-date {
+      font-size: inherit !important;
+      line-height: inherit !important;
+    }
+  }
+
   .topic-card__meta {
     display: flex;
     flex-wrap: wrap;
@@ -169,6 +178,15 @@
 
 .topic-thumbnails-card-style,
 .topic-thumbnails-compact-style {
+  .topic-compact-author__activity {
+    font-size: var(--font-down-1-rem);
+
+    .relative-date {
+      font-size: inherit !important;
+      line-height: inherit !important;
+    }
+  }
+
   .topic-author__category {
     display: none;
   }
