@@ -377,6 +377,11 @@ export default class TopicListThumbnail extends Component {
                 {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
                 ago
               </span>
+              {{#if this.topic.category}}
+                <span class="topic-card__category topic-author__category">
+                  {{this.topic.category.name}}
+                </span>
+              {{/if}}
             </div>
           </div>
         {{/if}}
@@ -514,6 +519,11 @@ export default class TopicListThumbnail extends Component {
               {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
               ago
             </span>
+            {{#if this.topic.category}}
+              <span class="topic-compact-author__category topic-author__category">
+                {{this.topic.category.name}}
+              </span>
+            {{/if}}
           </div>
         {{/if}}
 
