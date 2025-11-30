@@ -144,8 +144,8 @@
   font-size: var(--font-down-1-rem);
 
   .topic-author__activity,
-  .topic-card__author,
-  .topic-compact-author {
+  .topic-card__activity,
+  .topic-compact-author__activity {
     .relative-date {
       font-size: inherit !important;
       line-height: inherit !important;
@@ -153,6 +153,10 @@
   }
 
   .topic-author__category {
+    font-size: inherit;
+    line-height: inherit;
+
+    .badge-category__wrapper,
     .badge-category,
     .badge-category__name {
       font-size: inherit !important;

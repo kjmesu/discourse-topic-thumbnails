@@ -543,13 +543,10 @@
     line-height: inherit !important;
   }
 
-  .topic-author__activity,
-  .topic-card__author,
-  .topic-compact-author {
-    .relative-date {
-      font-size: inherit;
-      line-height: inherit;
-    }
+  .topic-card__activity .relative-date,
+  .topic-compact-author__activity .relative-date {
+    font-size: inherit !important;
+    line-height: inherit !important;
   }
 
   .topic-author__category {
@@ -558,7 +555,10 @@
     gap: 0.25em;
     color: currentColor;
     font-weight: 500;
+    font-size: inherit;
+    line-height: inherit;
 
+    .badge-category__wrapper,
     .badge-category,
     .badge-category__name {
       margin: 0;
