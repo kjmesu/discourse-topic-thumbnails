@@ -140,7 +140,7 @@
   }
 }
 
-.topic-author {
+  .topic-author {
   font-size: var(--font-down-1-rem);
 
   .topic-author__activity,
@@ -156,6 +156,7 @@
     font-size: inherit;
     line-height: inherit;
     align-content: baseline;
+    display: none;
 
     .badge-category__wrapper,
     .badge-category,
@@ -163,5 +164,12 @@
       font-size: inherit !important;
       line-height: inherit;
     }
+  }
+}
+
+.topic-thumbnails-card-style,
+.topic-thumbnails-compact-style {
+  .topic-author__category {
+    display: none;
   }
 }
