@@ -839,14 +839,13 @@
   .topic-card__header {
     display: flex;
     align-items: center;
-    font-size: var(--font-down-1-rem);
+    font-size: var(--font-down-2-rem);
     color: var(--primary-medium);
   }
 
   .topic-card__author {
     display: inline-flex;
     align-items: center;
-    font-size: inherit;
     color: inherit;
 
     .topic-card__author-user {
@@ -882,7 +881,6 @@
       display: inline-flex;
       gap: 0.25em;
       font-weight: 500;
-      font-size: inherit;
 
       & > a {
         color: var(--d-link-color);
