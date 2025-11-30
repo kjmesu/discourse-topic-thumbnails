@@ -380,7 +380,7 @@ export default class TopicListThumbnail extends Component {
               </span>
               {{#if this.topic.category}}
                 <span class="topic-card__category topic-author__category">
-                  {{categoryLink this.topic.category hideParent=true}}
+                  {{categoryLink this.topic.category}}
                 </span>
               {{/if}}
             </div>
@@ -522,7 +522,7 @@ export default class TopicListThumbnail extends Component {
             </span>
             {{#if this.topic.category}}
               <span class="topic-compact-author__category topic-author__category">
-                {{categoryLink this.topic.category hideParent=true}}
+                {{categoryLink this.topic.category}}
               </span>
             {{/if}}
           </div>
