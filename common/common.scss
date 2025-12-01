@@ -365,6 +365,7 @@
     border-radius: 0.75em;
     background: var(--primary-very-low);
     border: 1px solid var(--primary-low);
+    cursor: pointer;
 
     &:last-of-type {
       margin-bottom: 0;
@@ -883,6 +884,7 @@
     background: var(--secondary);
     margin-bottom: 1.25em;
     max-width: 700px;
+    cursor: pointer;
 
     &:last-of-type {
       margin-bottom: 0;
