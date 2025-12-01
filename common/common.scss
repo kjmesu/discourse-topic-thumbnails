@@ -415,9 +415,16 @@
   .topic-compact__title {
     grid-area: title;
     margin: 0;
-    color: var(--primary);
     font-weight: 600;
-    font-size: var(--font-up-1);
+    font-size: var(--font-0);
+  }
+
+  .topic-list-item:not(.visited) .topic-compact__title {
+    color: var(--primary);
+  }
+
+  .topic-list-item.visited .topic-compact__title {
+    color: var(--primary-medium);
   }
 
   .link-bottom-line,
