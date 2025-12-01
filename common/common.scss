@@ -381,7 +381,6 @@
     width: 100%;
     padding: 0;
     border: 0;
-    pointer-events: none;
   }
 
   .bulk-select,
@@ -410,19 +409,7 @@
   }
 
   .link-top-line {
-    grid-area: title;
-    color: var(--primary);
-    font-weight: 600;
-    font-size: var(--font-up-1);
-
-    a.title {
-      color: inherit;
-      padding: 0 !important;
-    }
-
-    a:visited {
-      color: var(--primary-medium);
-    }
+    display: none;
   }
 
   .link-bottom-line,
@@ -867,10 +854,6 @@
       .topic-post-badges,
       .topic-excerpt {
         display: none !important;
-      }
-
-      .main-link {
-        pointer-events: none;
       }
     }
   }
