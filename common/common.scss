@@ -409,7 +409,14 @@
   }
 
   .link-top-line {
-    display: none;
+    grid-area: title;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: var(--font-up-1);
+
+    a.title {
+      display: none;
+    }
   }
 
   .link-bottom-line,
