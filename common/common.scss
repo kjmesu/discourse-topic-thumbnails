@@ -409,14 +409,15 @@
   }
 
   .link-top-line {
+    display: none;
+  }
+
+  .topic-compact__title {
     grid-area: title;
+    margin: 0;
     color: var(--primary);
     font-weight: 600;
     font-size: var(--font-up-1);
-
-    a.title {
-      display: none;
-    }
   }
 
   .link-bottom-line,
