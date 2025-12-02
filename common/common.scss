@@ -109,6 +109,7 @@
       " title posters";
     grid-template-rows: 1fr auto;
     grid-template-columns: 1fr auto;
+    background-color: var(--primary-low);
     border: 1px solid var(--primary-low);
 
     &.selected,
@@ -362,7 +363,6 @@
     padding: 0.75em 1em;
     margin-bottom: 0.75em;
     border-radius: 0.75em;
-    background: var(--primary-very-low);
     border: 1px solid var(--primary-low);
     cursor: pointer;
     transition: background 0.15s ease-in-out;
