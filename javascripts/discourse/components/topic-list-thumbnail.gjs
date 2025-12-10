@@ -409,115 +409,116 @@ export default class TopicListThumbnail extends Component {
 
   <template>
     {{#if this.topicThumbnails.displayCardStyle}}
-      <article class="topic-card" {{on "click" this.handleCardClick}} {{on "auxclick" this.handleCardClick}}>
-        {{#if this.showCardAuthor}}
-          <div class="topic-card__header">
-            <div class="topic-card__author topic-author">
-              <UserInfo
-                @user={{this.topic.creator}}
-                @includeLink={{true}}
-                @includeAvatar={{true}}
-                @size="small"
-                class="topic-card__author-user topic-author__user"
-              />
-              {{#if this.showUserFeedback}}
-                <InlineUserFeedback
-                  @shouldRender={{true}}
-                  @rating={{this.topic.creator.average_rating}}
-                  @count={{this.topic.creator.total_trade_count}}
+      <article class="topic-card">
+        <a href={{this.firstPostUrl}} class="topic-card__link" {{on "click" this.handleCardClick}} {{on "auxclick" this.handleCardClick}}>
+          {{#if this.showCardAuthor}}
+            <div class="topic-card__header">
+              <div class="topic-card__author topic-author">
+                <UserInfo
+                  @user={{this.topic.creator}}
+                  @includeLink={{true}}
+                  @includeAvatar={{true}}
+                  @size="small"
+                  class="topic-card__author-user topic-author__user"
                 />
-              {{/if}}
-              <span class="topic-card__activity topic-author__activity">
-                <span
-                  class="topic-author__relative-date"
-                  style="font-size: inherit; line-height: inherit;"
-                >
-                  {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+                {{#if this.showUserFeedback}}
+                  <InlineUserFeedback
+                    @shouldRender={{true}}
+                    @rating={{this.topic.creator.average_rating}}
+                    @count={{this.topic.creator.total_trade_count}}
+                  />
+                {{/if}}
+                <span class="topic-card__activity topic-author__activity">
+                  <span
+                    class="topic-author__relative-date"
+                    style="font-size: inherit; line-height: inherit;"
+                  >
+                    {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+                  </span>
+                  ago
                 </span>
-                ago
-              </span>
-              {{#if this.showCategory}}
-                <span class="topic-card__category topic-author__category">
-                  {{categoryLink this.topic.category}}
-                </span>
-              {{/if}}
+                {{#if this.showCategory}}
+                  <span class="topic-card__category topic-author__category">
+                    {{categoryLink this.topic.category}}
+                  </span>
+                {{/if}}
+              </div>
             </div>
-          </div>
-        {{/if}}
+          {{/if}}
 
-        <h3 class="topic-card__title">
-          <a href={{this.firstPostUrl}} class="topic-card__title-link">
+          <h3 class="topic-card__title">
             {{this.topic.title}}
-          </a>
-        </h3>
+          </h3>
 
-        {{#if this.hasThumbnail}}
-          <div class="topic-card__thumbnail">
-            <img
-              src={{this.fallbackSrc}}
-              srcset={{this.srcSet}}
-              width={{this.displayWidth}}
-              height={{this.height}}
-              loading="lazy"
-              alt=""
-            />
-          </div>
-        {{else if this.topic.excerpt}}
-          <div class="topic-card__excerpt">
-            {{{this.topic.excerpt}}}
-          </div>
-        {{else}}
-          <div class="topic-card__thumbnail">
-            <div class="thumbnail-placeholder">
-              {{dIcon settings.placeholder_icon}}
+          {{#if this.hasThumbnail}}
+            <div class="topic-card__thumbnail">
+              <img
+                src={{this.fallbackSrc}}
+                srcset={{this.srcSet}}
+                width={{this.displayWidth}}
+                height={{this.height}}
+                loading="lazy"
+                alt=""
+              />
+            </div>
+          {{else if this.topic.excerpt}}
+            <div class="topic-card__excerpt">
+              {{{this.topic.excerpt}}}
+            </div>
+          {{else}}
+            <div class="topic-card__thumbnail">
+              <div class="thumbnail-placeholder">
+                {{dIcon settings.placeholder_icon}}
+              </div>
+            </div>
+          {{/if}}
+
+          <div class="topic-card__meta topic-meta">
+            <this.topicVoteControlsComponent @topic={{this.topic}} />
+            <span class="topic-card__meta-comments topic-meta__comments">
+              {{dIcon "far-comment"}}
+              {{this.commentsCount}}
+            </span>
+            <div class="topic-card__meta-actions topic-meta__actions">
+              <span
+                role="button"
+                tabindex="0"
+                class="topic-card__meta-action topic-meta__action"
+                {{on "click" this.copyTopicLink}}
+                {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
+              >
+                {{dIcon "share"}}
+                {{i18n "post.controls.share_action"}}
+              </span>
+              <span
+                role="button"
+                tabindex="0"
+                class="topic-card__meta-action topic-meta__action"
+                {{on "click" this.toggleSave}}
+                {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
+              >
+                {{#if this.isBookmarked}}
+                  {{dIcon "bookmark"}}
+                {{else}}
+                  {{dIcon "far-bookmark"}}
+                {{/if}}
+              </span>
+              <span
+                role="button"
+                tabindex="0"
+                class="topic-card__meta-action topic-meta__action"
+                {{on "click" this.reportTopic}}
+                {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
+              >
+                {{dIcon "flag"}}
+              </span>
             </div>
           </div>
-        {{/if}}
-
-        <div class="topic-card__meta topic-meta">
-          <this.topicVoteControlsComponent @topic={{this.topic}} />
-          <span class="topic-card__meta-comments topic-meta__comments">
-            {{dIcon "far-comment"}}
-            {{this.commentsCount}}
-          </span>
-          <div class="topic-card__meta-actions topic-meta__actions">
-            <span
-              role="button"
-              tabindex="0"
-              class="topic-card__meta-action topic-meta__action"
-              {{on "click" this.copyTopicLink}}
-              {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
-            >
-              {{dIcon "share"}}
-              {{i18n "post.controls.share_action"}}
-            </span>
-            <span
-              role="button"
-              tabindex="0"
-              class="topic-card__meta-action topic-meta__action"
-              {{on "click" this.toggleSave}}
-              {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
-            >
-              {{#if this.isBookmarked}}
-                {{dIcon "bookmark"}}
-              {{else}}
-                {{dIcon "far-bookmark"}}
-              {{/if}}
-            </span>
-            <span
-              role="button"
-              tabindex="0"
-              class="topic-card__meta-action topic-meta__action"
-              {{on "click" this.reportTopic}}
-              {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
-            >
-              {{dIcon "flag"}}
-            </span>
-          </div>
-        </div>
+        </a>
       </article>
     {{else if this.topicThumbnails.displayCompactStyle}}
-      <div
+      <a
+        href={{this.firstPostUrl}}
         class="topic-thumbnail-compact-link"
         aria-label={{this.topic.title}}
         {{on "click" this.handleCompactClick}}
@@ -589,9 +590,7 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
 
         <h3 class="topic-compact__title">
-          <a href={{this.firstPostUrl}} class="topic-compact__title-link">
-            {{this.topic.title}}
-          </a>
+          {{this.topic.title}}
         </h3>
 
         <div class="topic-compact-meta topic-meta">
@@ -676,7 +675,7 @@ export default class TopicListThumbnail extends Component {
             </:content>
           </DMenu>
         </div>
-      </div>
+      </a>
     {{else}}
       <div
         class={{concatClass
