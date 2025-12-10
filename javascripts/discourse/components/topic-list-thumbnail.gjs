@@ -15,6 +15,7 @@ import FlagModal from "discourse/components/modal/flag";
 import { getAbsoluteURL } from "discourse/lib/get-url";
 import { clipboardCopy } from "discourse/lib/utilities";
 import DiscourseURL from "discourse/lib/url";
+import { wantsNewWindow } from "discourse/lib/intercept-click";
 import { i18n } from "discourse-i18n";
 import TopicFlag from "discourse/lib/flag-targets/topic-flag";
 import { themePrefix } from "virtual:theme";
@@ -376,27 +377,39 @@ export default class TopicListThumbnail extends Component {
 
   @action
   handleCardClick(event) {
+    // Allow right-click, middle-click, and modifier keys to work normally
+    if (wantsNewWindow(event)) {
+      return;
+    }
+
     const target = event.target;
     const isInteractive = target.closest('a, button, [role="button"], .topic-vote-button, .topic-votes');
 
     if (!isInteractive) {
+      event.preventDefault();
       DiscourseURL.routeTo(this.firstPostUrl);
     }
   }
 
   @action
   handleCompactClick(event) {
+    // Allow right-click, middle-click, and modifier keys to work normally
+    if (wantsNewWindow(event)) {
+      return;
+    }
+
     const target = event.target;
     const isInteractive = target.closest('a, button, [role="button"], .topic-vote-button, .topic-votes, .d-menu');
 
     if (!isInteractive) {
+      event.preventDefault();
       DiscourseURL.routeTo(this.firstPostUrl);
     }
   }
 
   <template>
     {{#if this.topicThumbnails.displayCardStyle}}
-      <article class="topic-card" {{on "click" this.handleCardClick}}>
+      <article class="topic-card" {{on "click" this.handleCardClick}} {{on "auxclick" this.handleCardClick}}>
         {{#if this.showCardAuthor}}
           <div class="topic-card__header">
             <div class="topic-card__author topic-author">
@@ -433,7 +446,9 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
 
         <h3 class="topic-card__title">
-          {{this.topic.title}}
+          <a href={{this.firstPostUrl}} class="topic-card__title-link">
+            {{this.topic.title}}
+          </a>
         </h3>
 
         {{#if this.hasThumbnail}}
@@ -506,6 +521,7 @@ export default class TopicListThumbnail extends Component {
         class="topic-thumbnail-compact-link"
         aria-label={{this.topic.title}}
         {{on "click" this.handleCompactClick}}
+        {{on "auxclick" this.handleCompactClick}}
       >
         <div
           class={{concatClass
@@ -573,7 +589,9 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
 
         <h3 class="topic-compact__title">
-          {{this.topic.title}}
+          <a href={{this.firstPostUrl}} class="topic-compact__title-link">
+            {{this.topic.title}}
+          </a>
         </h3>
 
         <div class="topic-compact-meta topic-meta">
