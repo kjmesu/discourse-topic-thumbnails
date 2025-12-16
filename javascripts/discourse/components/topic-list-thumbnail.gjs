@@ -6,6 +6,7 @@ import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import DropdownMenu from "discourse/components/dropdown-menu";
 import UserInfo from "discourse/components/user-info";
+import TopicStatus from "discourse/components/topic-status";
 import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import categoryLink from "discourse/helpers/category-link";
@@ -440,7 +441,8 @@ export default class TopicListThumbnail extends Component {
           {{/if}}
 
           <h3 class="topic-card__title">
-            {{this.topic.title}}
+            <TopicStatus @topic={{this.topic}} />
+            <span>{{this.topic.title}}</span>
           </h3>
 
           {{#if this.hasThumbnail}}
@@ -583,7 +585,8 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
 
         <h3 class="topic-compact__title">
-          {{this.topic.title}}
+          <TopicStatus @topic={{this.topic}} />
+          <span>{{this.topic.title}}</span>
         </h3>
 
         <div class="topic-compact-meta topic-meta">
