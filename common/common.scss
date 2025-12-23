@@ -1046,7 +1046,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 700px;
+    width: 100%;
+    max-width: 700px;
     max-height: 540px;
     border-radius: 0.5em;
     overflow: hidden;
