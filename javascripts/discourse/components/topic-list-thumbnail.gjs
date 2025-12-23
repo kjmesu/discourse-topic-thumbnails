@@ -446,9 +446,20 @@ export default class TopicListThumbnail extends Component {
           {{#if this.hasThumbnail}}
             <div class="topic-card__thumbnail">
               <img
+                class="background-thumbnail"
                 src={{this.fallbackSrc}}
                 srcset={{this.srcSet}}
-                width={{this.displayWidth}}
+                width={{this.width}}
+                height={{this.height}}
+                loading="lazy"
+                alt=""
+                aria-hidden="true"
+              />
+              <img
+                class="main-thumbnail"
+                src={{this.fallbackSrc}}
+                srcset={{this.srcSet}}
+                width={{this.width}}
                 height={{this.height}}
                 loading="lazy"
                 alt=""
