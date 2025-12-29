@@ -114,9 +114,14 @@ export default class TopicThumbnailService extends Service {
     if (customThumbnailMode) {
       return customThumbnailMode;
     }
+
+    // Manual display mode should only apply on topic list routes or when enable_outside_topic_lists is enabled
     if (this.manualDisplayMode) {
-      return this.manualDisplayMode;
+      if (isTopicListRoute || settings.enable_outside_topic_lists) {
+        return this.manualDisplayMode;
+      }
     }
+
     if (minimalGridCategories.includes(viewingCategoryId)) {
       return "minimal-grid";
     } else if (blogStyleCategories.includes(viewingCategoryId)) {
