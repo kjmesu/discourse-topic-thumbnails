@@ -145,12 +145,16 @@ export default class TopicThumbnailService extends Service {
       return "list";
     } else if (compactTags.includes(viewingTagId)) {
       return "compact-style";
-    } else if (isTopicRoute && settings.suggested_topics_mode) {
-      return settings.suggested_topics_mode;
-    } else if (isTopicListRoute || settings.enable_outside_topic_lists) {
+    } else if (isTopicListRoute) {
       return settings.default_thumbnail_mode;
-    } else if (isDocsRoute) {
-      return settings.docs_thumbnail_mode;
+    } else if (settings.enable_outside_topic_lists) {
+      if (isTopicRoute && settings.suggested_topics_mode) {
+        return settings.suggested_topics_mode;
+      } else if (isDocsRoute) {
+        return settings.docs_thumbnail_mode;
+      } else {
+        return settings.default_thumbnail_mode;
+      }
     } else {
       return "none";
     }
