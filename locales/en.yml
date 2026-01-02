@@ -24,6 +24,22 @@ en:
       list_thumbnail_size: Base size for thumbnails in the 'list' view
       view_selector_modes: Which thumbnail modes should appear in the view selector dropdown?
   topic_thumbnails:
+    dates:
+      x_minutes:
+        one: "%{count} min. ago"
+        other: "%{count} min. ago"
+      x_hours:
+        one: "%{count} hr. ago"
+        other: "%{count} hr. ago"
+      x_days:
+        one: "%{count} day ago"
+        other: "%{count} days ago"
+      x_months:
+        one: "%{count} mo. ago"
+        other: "%{count} mo. ago"
+      x_years:
+        one: "%{count} yr. ago"
+        other: "%{count} yr. ago"
     view_selector:
       label: "Change topic view"
     view_modes:
