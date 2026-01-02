@@ -26,6 +26,7 @@ import Bookmark from "discourse/models/bookmark";
 import TopicVoteControls from "./topic-vote-controls";
 import DMenu from "discourse/float-kit/components/d-menu";
 import InlineUserFeedback from "./inline-user-feedback";
+import formatDateAlwaysRelative from "../helpers/format-date-always-relative";
 
 const OVERFLOW_EVENT = "topic-thumbnails:overflow-open";
 
@@ -426,9 +427,8 @@ export default class TopicListThumbnail extends Component {
                     class="topic-author__relative-date"
                     style="font-size: inherit; line-height: inherit;"
                   >
-                    {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+                    {{formatDateAlwaysRelative this.topic.createdAt}}
                   </span>
-                  ago
                 </span>
                 {{#if this.showCategory}}
                   <span class="topic-card__category topic-author__category">
@@ -581,9 +581,8 @@ export default class TopicListThumbnail extends Component {
                 class="topic-author__relative-date"
                 style="font-size: inherit; line-height: inherit;"
               >
-                {{formatDate this.topic.createdAt format="tiny" noTitle="true"}}
+                {{formatDateAlwaysRelative this.topic.createdAt}}
               </span>
-              ago
             </span>
             {{#if this.showCategory}}
               <span class="topic-compact-author__category topic-author__category">
