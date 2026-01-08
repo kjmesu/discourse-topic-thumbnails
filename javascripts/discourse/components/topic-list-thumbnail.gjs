@@ -11,6 +11,7 @@ import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import categoryLink from "discourse/helpers/category-link";
 import dIcon from "discourse/helpers/d-icon";
+import dirSpan from "discourse/helpers/dir-span";
 import formatDate from "discourse/helpers/format-date";
 import FlagModal from "discourse/components/modal/flag";
 import { getAbsoluteURL } from "discourse/lib/get-url";
@@ -467,9 +468,9 @@ export default class TopicListThumbnail extends Component {
                 alt=""
               />
             </div>
-          {{else if this.topic.excerpt}}
+          {{else if this.topic.hasExcerpt}}
             <div class="topic-card__excerpt">
-              {{{this.topic.excerpt}}}
+              {{dirSpan this.topic.escapedExcerpt htmlSafe="true"}}
             </div>
           {{else}}
             <div class="topic-card__thumbnail">

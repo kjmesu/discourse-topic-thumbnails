@@ -1106,6 +1106,9 @@
 .topic-card__excerpt {
   font-size: var(--font-down-1-rem);
   color: var(--primary-medium);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 }
