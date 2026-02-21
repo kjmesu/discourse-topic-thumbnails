@@ -67,7 +67,7 @@ enabled_categories:
 category_placeholder_icons:
   type: string
   default: ""
-  description: "Override placeholder icon for specific categories. Format: categoryId:iconName|categoryId2:iconName2 (e.g., 5:image|7:camera|12:file). Use FontAwesome icon names without 'fa-' prefix."
+  description: "Override placeholder icon for specific categories. Format: categoryId:iconName|categoryId2:iconName2 (e.g., 5:image|7:camera|12:file). Use FontAwesome icon names without 'fa-' prefix. Note: Custom icons must be registered in about.json svg_icons array or in site settings (Admin → Settings → svg_icon_subset)."
 
 blog_style_tags:
   type: list
