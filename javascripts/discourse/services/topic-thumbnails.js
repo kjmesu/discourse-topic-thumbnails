@@ -47,6 +47,9 @@ const enabledCategories = settings.enabled_categories
   .map((id) => parseInt(id, 10))
   .filter((id) => !isNaN(id));
 
+// eslint-disable-next-line no-console
+console.log("Topic Thumbnails - Enabled Categories:", enabledCategories);
+
 const categoryPlaceholderMap = (() => {
   const map = {};
   if (!settings.category_placeholder_icons) {
@@ -137,7 +140,11 @@ export default class TopicThumbnailService extends Service {
     isDocsRoute
   ) {
     if (enabledCategories.length > 0) {
+      // eslint-disable-next-line no-console
+      console.log("Topic Thumbnails - Checking category:", viewingCategoryId, "against enabled:", enabledCategories);
       if (!viewingCategoryId || !enabledCategories.includes(viewingCategoryId)) {
+        // eslint-disable-next-line no-console
+        console.log("Topic Thumbnails - Category not enabled, returning 'none'");
         return "none";
       }
     }
