@@ -128,7 +128,7 @@ mobile_thumbnails:
 
 list_thumbnail_size:
   client: true
-  default: 200
+  default: 400
   type: enum
   choices:
     - 200
