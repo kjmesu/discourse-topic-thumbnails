@@ -64,6 +64,9 @@ const categoryPlaceholderMap = (() => {
     }
   });
 
+  // eslint-disable-next-line no-console
+  console.log("Topic Thumbnails - Category Placeholder Map:", map);
+
   return map;
 })();
 
