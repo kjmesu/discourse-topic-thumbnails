@@ -76,7 +76,16 @@ export default class TopicListThumbnail extends Component {
   }
 
   get hasThumbnail() {
-    return !!this.topic.thumbnails && this.topicThumbnails.thumbnailsEnabledForCategory;
+    if (!this.topic.thumbnails) {
+      return false;
+    }
+
+    const enabledCategories = this.topicThumbnails.enabledCategoriesList;
+    if (enabledCategories.length === 0) {
+      return true;
+    }
+
+    return enabledCategories.includes(this.topic.category_id);
   }
 
   get displayWidth() {

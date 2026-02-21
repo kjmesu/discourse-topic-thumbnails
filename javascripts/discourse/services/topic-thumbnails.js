@@ -76,6 +76,10 @@ export default class TopicThumbnailService extends Service {
 
   manualSelections = this.#loadManualSelections();
 
+  get enabledCategoriesList() {
+    return enabledCategories;
+  }
+
   @dependentKeyCompat
   get isTopicListRoute() {
     return this.discovery.onDiscoveryRoute;
@@ -215,7 +219,10 @@ export default class TopicThumbnailService extends Service {
     if (enabledCategories.length === 0) {
       return true;
     }
-    return viewingCategoryId && enabledCategories.includes(viewingCategoryId);
+    if (!viewingCategoryId) {
+      return true;
+    }
+    return enabledCategories.includes(viewingCategoryId);
   }
 
   @discourseComputed("shouldDisplay", "displayMode")
