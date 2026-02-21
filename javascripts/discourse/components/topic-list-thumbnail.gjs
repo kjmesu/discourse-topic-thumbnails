@@ -49,6 +49,10 @@ export default class TopicListThumbnail extends Component {
 
   responsiveRatios = [1, 1.5, 2];
 
+  get optimizedThumbnails() {
+    return this.topic.thumbnails.filter(t => t.max_width !== null);
+  }
+
   constructor() {
     super(...arguments);
     this.bookmarkId = this.topic?.bookmark_id;
@@ -107,7 +111,7 @@ export default class TopicListThumbnail extends Component {
 
     this.responsiveRatios.forEach((ratio) => {
       const target = ratio * this.displayWidth;
-      const match = this.topic.thumbnails.find(
+      const match = this.optimizedThumbnails.find(
         (t) => t.url && t.max_width === target
       );
       if (match) {
@@ -115,38 +119,43 @@ export default class TopicListThumbnail extends Component {
       }
     });
 
-    if (srcSetArray.length === 0) {
-      srcSetArray.push(`${this.original.url} 1x`);
+    if (srcSetArray.length === 0 && this.optimizedThumbnails.length > 0) {
+      const smallest = this.optimizedThumbnails.sort((a, b) => a.max_width - b.max_width)[0];
+      srcSetArray.push(`${smallest.url} 1x`);
     }
 
     return srcSetArray.join(",");
   }
 
-  get original() {
-    return this.topic.thumbnails[0];
+  get smallestOptimized() {
+    const sorted = this.optimizedThumbnails
+      .filter(t => t.url)
+      .sort((a, b) => a.max_width - b.max_width);
+    return sorted[0] || this.topic.thumbnails[0];
   }
 
   get width() {
-    return this.original.width;
+    return this.smallestOptimized.width;
   }
 
   get height() {
-    return this.original.height;
+    return this.smallestOptimized.height;
   }
 
   get fallbackSrc() {
-    const largeEnough = this.topic.thumbnails.filter((t) => {
-      if (!t.url) {
-        return false;
-      }
-      return t.max_width > this.displayWidth * this.responsiveRatios.lastObject;
-    });
+    const largeEnough = this.optimizedThumbnails
+      .filter(t => t.url && t.max_width >= this.displayWidth * 2)
+      .sort((a, b) => a.max_width - b.max_width);
 
-    if (largeEnough.lastObject) {
-      return largeEnough.lastObject.url;
+    if (largeEnough.length > 0) {
+      return largeEnough[0].url;
     }
 
-    return this.original.url;
+    const sorted = this.optimizedThumbnails
+      .filter(t => t.url)
+      .sort((a, b) => b.max_width - a.max_width);
+
+    return sorted[0]?.url;
   }
 
   get url() {
@@ -470,6 +479,7 @@ export default class TopicListThumbnail extends Component {
                 width={{this.width}}
                 height={{this.height}}
                 loading="lazy"
+                decoding="async"
                 alt=""
                 aria-hidden="true"
               />
@@ -480,6 +490,7 @@ export default class TopicListThumbnail extends Component {
                 width={{this.width}}
                 height={{this.height}}
                 loading="lazy"
+                decoding="async"
                 alt=""
               />
             </div>
@@ -560,6 +571,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
             <img
@@ -569,6 +581,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
           {{else}}
@@ -714,6 +727,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
             <img
@@ -723,6 +737,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
           {{else}}
