@@ -50,7 +50,13 @@ export default class TopicListThumbnail extends Component {
   responsiveRatios = [1, 1.5, 2];
 
   get optimizedThumbnails() {
-    return this.topic.thumbnails.filter(t => t.max_width !== null);
+    return this.topic.thumbnails?.filter((t) => t.max_width !== null) || [];
+  }
+
+  get sortedOptimizedThumbnails() {
+    return [...this.optimizedThumbnails].sort(
+      (a, b) => a.max_width - b.max_width
+    );
   }
 
   constructor() {
@@ -122,43 +128,44 @@ export default class TopicListThumbnail extends Component {
       }
     });
 
-    if (srcSetArray.length === 0 && this.optimizedThumbnails.length > 0) {
-      const smallest = this.optimizedThumbnails.sort((a, b) => a.max_width - b.max_width)[0];
-      srcSetArray.push(`${smallest.url} 1x`);
+    if (srcSetArray.length === 0) {
+      const smallest = this.sortedOptimizedThumbnails[0];
+      if (smallest?.url) {
+        srcSetArray.push(`${smallest.url} 1x`);
+      }
     }
 
     return srcSetArray.join(",");
   }
 
   get smallestOptimized() {
-    const sorted = this.optimizedThumbnails
-      .filter(t => t.url)
-      .sort((a, b) => a.max_width - b.max_width);
-    return sorted[0] || this.topic.thumbnails[0];
+    const smallest = this.sortedOptimizedThumbnails.find((t) => t.url);
+    return smallest || this.topic.thumbnails?.[0];
   }
 
   get width() {
-    return this.smallestOptimized.width;
+    return this.smallestOptimized?.width;
   }
 
   get height() {
-    return this.smallestOptimized.height;
+    return this.smallestOptimized?.height;
   }
 
   get fallbackSrc() {
-    const largeEnough = this.optimizedThumbnails
-      .filter(t => t.url && t.max_width >= this.displayWidth * 2)
-      .sort((a, b) => a.max_width - b.max_width);
+    const minWidth = this.displayWidth * 2;
+    const largeEnough = this.sortedOptimizedThumbnails.find(
+      (t) => t.url && t.max_width >= minWidth
+    );
 
-    if (largeEnough.length > 0) {
-      return largeEnough[0].url;
+    if (largeEnough) {
+      return largeEnough.url;
     }
 
-    const sorted = this.optimizedThumbnails
-      .filter(t => t.url)
-      .sort((a, b) => b.max_width - a.max_width);
+    const largest = [...this.sortedOptimizedThumbnails]
+      .reverse()
+      .find((t) => t.url);
 
-    return sorted[0]?.url;
+    return largest?.url;
   }
 
   get url() {
