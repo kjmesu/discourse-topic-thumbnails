@@ -100,7 +100,7 @@ export default class TopicListThumbnail extends Component {
 
   get displayWidth() {
     if (this.topicThumbnails.displayCardStyle) {
-      return 600;
+      return 800;
     }
 
     return this.topicThumbnails.displayList ||
