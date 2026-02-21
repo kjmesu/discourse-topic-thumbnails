@@ -210,25 +210,6 @@ export default class TopicThumbnailService extends Service {
     return enabledForRoute && enabledForDevice;
   }
 
-  @discourseComputed("viewingCategoryId")
-  currentPlaceholderIcon(viewingCategoryId) {
-    if (viewingCategoryId && categoryPlaceholderMap[viewingCategoryId]) {
-      return categoryPlaceholderMap[viewingCategoryId];
-    }
-    return settings.placeholder_icon;
-  }
-
-  @discourseComputed("viewingCategoryId")
-  thumbnailsEnabledForCategory(viewingCategoryId) {
-    if (enabledCategories.length === 0) {
-      return true;
-    }
-    if (!viewingCategoryId) {
-      return true;
-    }
-    return enabledCategories.includes(viewingCategoryId);
-  }
-
   @discourseComputed("shouldDisplay", "displayMode")
   displayMinimalGrid(shouldDisplay, displayMode) {
     return shouldDisplay && displayMode === "minimal-grid";
