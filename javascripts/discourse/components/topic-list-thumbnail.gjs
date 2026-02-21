@@ -76,7 +76,7 @@ export default class TopicListThumbnail extends Component {
   }
 
   get hasThumbnail() {
-    return !!this.topic.thumbnails;
+    return !!this.topic.thumbnails && this.topicThumbnails.thumbnailsEnabledForCategory;
   }
 
   get displayWidth() {
