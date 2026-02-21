@@ -42,6 +42,31 @@ const gridTags = settings.grid_tags.split("|");
 const masonryTags = settings.masonry_tags.split("|");
 const blogStyleTags = settings.blog_style_tags.split("|");
 
+const enabledCategories = settings.enabled_categories
+  .split("|")
+  .map((id) => parseInt(id, 10))
+  .filter((id) => !isNaN(id));
+
+const categoryPlaceholderMap = (() => {
+  const map = {};
+  if (!settings.category_placeholder_icons) {
+    return map;
+  }
+
+  settings.category_placeholder_icons.split("|").forEach((pair) => {
+    const parts = pair.split(":");
+    if (parts.length === 2) {
+      const categoryId = parseInt(parts[0].trim(), 10);
+      const iconName = parts[1].trim();
+      if (!isNaN(categoryId) && iconName) {
+        map[categoryId] = iconName;
+      }
+    }
+  });
+
+  return map;
+})();
+
 export default class TopicThumbnailService extends Service {
   @service router;
   @service discovery;
@@ -50,6 +75,14 @@ export default class TopicThumbnailService extends Service {
   @tracked manualSelectionsVersion = 0;
 
   manualSelections = this.#loadManualSelections();
+
+  get enabledCategoriesList() {
+    return enabledCategories;
+  }
+
+  getPlaceholderIconForCategory(categoryId) {
+    return categoryPlaceholderMap[categoryId];
+  }
 
   @dependentKeyCompat
   get isTopicListRoute() {
