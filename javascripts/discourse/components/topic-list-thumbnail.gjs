@@ -88,6 +88,12 @@ export default class TopicListThumbnail extends Component {
     return enabledCategories.includes(this.topic.category_id);
   }
 
+  get placeholderIcon() {
+    const categoryId = this.topic.category_id;
+    const customIcon = this.topicThumbnails.getPlaceholderIconForCategory(categoryId);
+    return customIcon || settings.placeholder_icon;
+  }
+
   get displayWidth() {
     return this.topicThumbnails.displayList ||
       this.topicThumbnails.displayCompactStyle ||
@@ -484,7 +490,7 @@ export default class TopicListThumbnail extends Component {
           {{else}}
             <div class="topic-card__thumbnail">
               <div class="thumbnail-placeholder">
-                {{dIcon this.topicThumbnails.currentPlaceholderIcon}}
+                {{dIcon this.placeholderIcon}}
               </div>
             </div>
           {{/if}}
@@ -567,7 +573,7 @@ export default class TopicListThumbnail extends Component {
             />
           {{else}}
             <div class="thumbnail-placeholder">
-              {{dIcon this.topicThumbnails.currentPlaceholderIcon}}
+              {{dIcon this.placeholderIcon}}
             </div>
           {{/if}}
         </div>
@@ -721,7 +727,7 @@ export default class TopicListThumbnail extends Component {
             />
           {{else}}
             <div class="thumbnail-placeholder">
-              {{dIcon this.topicThumbnails.currentPlaceholderIcon}}
+              {{dIcon this.placeholderIcon}}
             </div>
           {{/if}}
         </a>

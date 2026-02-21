@@ -80,6 +80,10 @@ export default class TopicThumbnailService extends Service {
     return enabledCategories;
   }
 
+  getPlaceholderIconForCategory(categoryId) {
+    return categoryPlaceholderMap[categoryId];
+  }
+
   @dependentKeyCompat
   get isTopicListRoute() {
     return this.discovery.onDiscoveryRoute;
