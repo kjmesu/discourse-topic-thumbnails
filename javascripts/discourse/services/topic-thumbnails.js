@@ -207,9 +207,15 @@ export default class TopicThumbnailService extends Service {
 
   @discourseComputed("viewingCategoryId")
   currentPlaceholderIcon(viewingCategoryId) {
+    // eslint-disable-next-line no-console
+    console.log("Topic Thumbnails - Getting placeholder for category:", viewingCategoryId, "map:", categoryPlaceholderMap);
     if (viewingCategoryId && categoryPlaceholderMap[viewingCategoryId]) {
+      // eslint-disable-next-line no-console
+      console.log("Topic Thumbnails - Returning custom icon:", categoryPlaceholderMap[viewingCategoryId]);
       return categoryPlaceholderMap[viewingCategoryId];
     }
+    // eslint-disable-next-line no-console
+    console.log("Topic Thumbnails - Returning default icon:", settings.placeholder_icon);
     return settings.placeholder_icon;
   }
 
