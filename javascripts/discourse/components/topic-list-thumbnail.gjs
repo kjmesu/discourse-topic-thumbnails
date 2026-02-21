@@ -49,6 +49,16 @@ export default class TopicListThumbnail extends Component {
 
   responsiveRatios = [1, 1.5, 2];
 
+  get optimizedThumbnails() {
+    return this.topic.thumbnails?.filter((t) => t.max_width !== null) || [];
+  }
+
+  get sortedOptimizedThumbnails() {
+    return [...this.optimizedThumbnails].sort(
+      (a, b) => a.max_width - b.max_width
+    );
+  }
+
   constructor() {
     super(...arguments);
     this.bookmarkId = this.topic?.bookmark_id;
@@ -95,9 +105,12 @@ export default class TopicListThumbnail extends Component {
   }
 
   get displayWidth() {
+    if (this.topicThumbnails.displayCardStyle) {
+      return 800;
+    }
+
     return this.topicThumbnails.displayList ||
-      this.topicThumbnails.displayCompactStyle ||
-      this.topicThumbnails.displayCardStyle
+      this.topicThumbnails.displayCompactStyle
       ? settings.list_thumbnail_size
       : 400;
   }
@@ -107,7 +120,7 @@ export default class TopicListThumbnail extends Component {
 
     this.responsiveRatios.forEach((ratio) => {
       const target = ratio * this.displayWidth;
-      const match = this.topic.thumbnails.find(
+      const match = this.optimizedThumbnails.find(
         (t) => t.url && t.max_width === target
       );
       if (match) {
@@ -116,37 +129,43 @@ export default class TopicListThumbnail extends Component {
     });
 
     if (srcSetArray.length === 0) {
-      srcSetArray.push(`${this.original.url} 1x`);
+      const smallest = this.sortedOptimizedThumbnails[0];
+      if (smallest?.url) {
+        srcSetArray.push(`${smallest.url} 1x`);
+      }
     }
 
     return srcSetArray.join(",");
   }
 
-  get original() {
-    return this.topic.thumbnails[0];
+  get smallestOptimized() {
+    const smallest = this.sortedOptimizedThumbnails.find((t) => t.url);
+    return smallest || this.topic.thumbnails?.[0];
   }
 
   get width() {
-    return this.original.width;
+    return this.smallestOptimized?.width;
   }
 
   get height() {
-    return this.original.height;
+    return this.smallestOptimized?.height;
   }
 
   get fallbackSrc() {
-    const largeEnough = this.topic.thumbnails.filter((t) => {
-      if (!t.url) {
-        return false;
-      }
-      return t.max_width > this.displayWidth * this.responsiveRatios.lastObject;
-    });
+    const minWidth = this.displayWidth * 2;
+    const largeEnough = this.sortedOptimizedThumbnails.find(
+      (t) => t.url && t.max_width >= minWidth
+    );
 
-    if (largeEnough.lastObject) {
-      return largeEnough.lastObject.url;
+    if (largeEnough) {
+      return largeEnough.url;
     }
 
-    return this.original.url;
+    const largest = [...this.sortedOptimizedThumbnails]
+      .reverse()
+      .find((t) => t.url);
+
+    return largest?.url;
   }
 
   get url() {
@@ -470,6 +489,7 @@ export default class TopicListThumbnail extends Component {
                 width={{this.width}}
                 height={{this.height}}
                 loading="lazy"
+                decoding="async"
                 alt=""
                 aria-hidden="true"
               />
@@ -480,6 +500,7 @@ export default class TopicListThumbnail extends Component {
                 width={{this.width}}
                 height={{this.height}}
                 loading="lazy"
+                decoding="async"
                 alt=""
               />
             </div>
@@ -560,6 +581,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
             <img
@@ -569,6 +591,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
           {{else}}
@@ -714,6 +737,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
             <img
@@ -723,6 +747,7 @@ export default class TopicListThumbnail extends Component {
               width={{this.width}}
               height={{this.height}}
               loading="lazy"
+              decoding="async"
               alt=""
             />
           {{else}}
