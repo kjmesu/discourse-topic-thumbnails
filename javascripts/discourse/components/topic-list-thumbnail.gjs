@@ -99,9 +99,12 @@ export default class TopicListThumbnail extends Component {
   }
 
   get displayWidth() {
+    if (this.topicThumbnails.displayCardStyle) {
+      return 600;
+    }
+
     return this.topicThumbnails.displayList ||
-      this.topicThumbnails.displayCompactStyle ||
-      this.topicThumbnails.displayCardStyle
+      this.topicThumbnails.displayCompactStyle
       ? settings.list_thumbnail_size
       : 400;
   }
