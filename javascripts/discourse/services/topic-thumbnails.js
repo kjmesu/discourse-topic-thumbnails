@@ -42,6 +42,31 @@ const gridTags = settings.grid_tags.split("|");
 const masonryTags = settings.masonry_tags.split("|");
 const blogStyleTags = settings.blog_style_tags.split("|");
 
+const enabledCategories = settings.enabled_categories
+  .split("|")
+  .map((id) => parseInt(id, 10))
+  .filter((id) => !isNaN(id));
+
+const categoryPlaceholderMap = (() => {
+  const map = {};
+  if (!settings.category_placeholder_icons) {
+    return map;
+  }
+
+  settings.category_placeholder_icons.split("|").forEach((pair) => {
+    const parts = pair.split(":");
+    if (parts.length === 2) {
+      const categoryId = parseInt(parts[0].trim(), 10);
+      const iconName = parts[1].trim();
+      if (!isNaN(categoryId) && iconName) {
+        map[categoryId] = iconName;
+      }
+    }
+  });
+
+  return map;
+})();
+
 export default class TopicThumbnailService extends Service {
   @service router;
   @service discovery;
@@ -111,6 +136,11 @@ export default class TopicThumbnailService extends Service {
     isTopicRoute,
     isDocsRoute
   ) {
+    if (enabledCategories.length > 0) {
+      if (!viewingCategoryId || !enabledCategories.includes(viewingCategoryId)) {
+        return "none";
+      }
+    }
     if (customThumbnailMode) {
       return customThumbnailMode;
     }
@@ -175,6 +205,14 @@ export default class TopicThumbnailService extends Service {
   @discourseComputed("enabledForRoute", "enabledForDevice")
   shouldDisplay(enabledForRoute, enabledForDevice) {
     return enabledForRoute && enabledForDevice;
+  }
+
+  @discourseComputed("viewingCategoryId")
+  currentPlaceholderIcon(viewingCategoryId) {
+    if (viewingCategoryId && categoryPlaceholderMap[viewingCategoryId]) {
+      return categoryPlaceholderMap[viewingCategoryId];
+    }
+    return settings.placeholder_icon;
   }
 
   @discourseComputed("shouldDisplay", "displayMode")

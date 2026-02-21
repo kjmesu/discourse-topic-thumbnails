@@ -475,7 +475,7 @@ export default class TopicListThumbnail extends Component {
           {{else}}
             <div class="topic-card__thumbnail">
               <div class="thumbnail-placeholder">
-                {{dIcon settings.placeholder_icon}}
+                {{dIcon this.topicThumbnails.currentPlaceholderIcon}}
               </div>
             </div>
           {{/if}}
@@ -558,7 +558,7 @@ export default class TopicListThumbnail extends Component {
             />
           {{else}}
             <div class="thumbnail-placeholder">
-              {{dIcon settings.placeholder_icon}}
+              {{dIcon this.topicThumbnails.currentPlaceholderIcon}}
             </div>
           {{/if}}
         </div>
@@ -712,7 +712,7 @@ export default class TopicListThumbnail extends Component {
             />
           {{else}}
             <div class="thumbnail-placeholder">
-              {{dIcon settings.placeholder_icon}}
+              {{dIcon this.topicThumbnails.currentPlaceholderIcon}}
             </div>
           {{/if}}
         </a>
