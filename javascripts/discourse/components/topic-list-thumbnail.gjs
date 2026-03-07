@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import EmberObject, { action } from "@ember/object";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 import { service } from "@ember/service";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
@@ -51,6 +51,7 @@ export default class TopicListThumbnail extends Component {
     return this.topic.thumbnails?.filter((t) => t.max_width !== null) || [];
   }
 
+  @cached
   get sortedOptimizedThumbnails() {
     return [...this.optimizedThumbnails].sort(
       (a, b) => a.max_width - b.max_width
@@ -112,6 +113,7 @@ export default class TopicListThumbnail extends Component {
       : 400;
   }
 
+  @cached
   get srcSet() {
     const srcSetArray = [];
 
@@ -135,19 +137,23 @@ export default class TopicListThumbnail extends Component {
     return srcSetArray.join(",");
   }
 
+  @cached
   get smallestOptimized() {
     const smallest = this.sortedOptimizedThumbnails.find((t) => t.url);
     return smallest || this.topic.thumbnails?.[0];
   }
 
+  @cached
   get width() {
     return this.smallestOptimized?.width;
   }
 
+  @cached
   get height() {
     return this.smallestOptimized?.height;
   }
 
+  @cached
   get fallbackSrc() {
     const minWidth = this.displayWidth * 2;
     const largeEnough = this.sortedOptimizedThumbnails.find(
