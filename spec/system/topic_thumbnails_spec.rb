@@ -8,11 +8,8 @@ RSpec.describe "Topic Thumbnails", type: :system do
   before { sign_in user }
 
   {
-    "grid" => "grid",
-    "minimal-grid" => "minimal",
-    "list" => "list",
-    "blog-style" => "blog-style-grid",
     "compact-style" => "compact",
+    "card-style" => "card-style",
   }.each do |style, class_name|
     it "renders topic thumbnails in #{style} style" do
       theme.update_setting(:default_thumbnail_mode, style)
@@ -23,18 +20,6 @@ RSpec.describe "Topic Thumbnails", type: :system do
       expect(page).to have_css(".topic-list.topic-thumbnails-#{class_name}")
       expect(page).to have_css(".topic-list-thumbnail", count: 5)
     end
-  end
-
-  it "renders topic thumbnails in masonry style" do
-    theme.update_setting(:default_thumbnail_mode, "masonry")
-    theme.save!
-
-    visit "/latest"
-
-    expect(page).to have_css(".topic-list.topic-thumbnails-masonry")
-    expect(page).to have_css(".topic-list-thumbnail", count: 5)
-
-    expect(page).to have_css(".topic-list-item.masonry-0")
   end
 
   it "shows metadata actions in compact style" do
@@ -64,11 +49,11 @@ RSpec.describe "Topic Thumbnails", type: :system do
     visit "/latest"
 
     expect(page).to have_css(".topic-view-mode-selector__trigger")
-    expect(page).to have_css(".topic-list.topic-thumbnails-grid")
+    expect(page).to have_css(".topic-list.topic-thumbnails-compact")
 
     find(".topic-view-mode-selector__trigger").click
-    find(".topic-view-mode-selector__option", text: "List").click
+    find(".topic-view-mode-selector__option", text: "Card").click
 
-    expect(page).to have_css(".topic-list.topic-thumbnails-list")
+    expect(page).to have_css(".topic-list.topic-thumbnails-card-style")
   end
 end

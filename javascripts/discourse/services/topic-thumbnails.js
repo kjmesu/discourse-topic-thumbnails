@@ -6,14 +6,6 @@ import Site from "discourse/models/site";
 
 const LOCAL_STORAGE_KEY = "topic-thumbnails-manual-modes";
 
-const minimalGridCategories = settings.minimal_grid_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const listCategories = settings.list_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
 const compactCategories = settings.compact_categories
   .split("|")
   .map((id) => parseInt(id, 10));
@@ -22,25 +14,8 @@ const cardCategories = settings.card_categories
   .split("|")
   .map((id) => parseInt(id, 10));
 
-const gridCategories = settings.grid_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const masonryCategories = settings.masonry_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const blogStyleCategories = settings.blog_style_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const minimalGridTags = settings.minimal_grid_tags.split("|");
-const listTags = settings.list_tags.split("|");
 const compactTags = settings.compact_tags.split("|");
 const cardTags = settings.card_tags.split("|");
-const gridTags = settings.grid_tags.split("|");
-const masonryTags = settings.masonry_tags.split("|");
-const blogStyleTags = settings.blog_style_tags.split("|");
 
 const enabledCategories = settings.enabled_categories
   .split("|")
@@ -71,7 +46,6 @@ export default class TopicThumbnailService extends Service {
   @service router;
   @service discovery;
 
-  @tracked masonryContainerWidth;
   @tracked manualSelectionsVersion = 0;
 
   manualSelections = this.#loadManualSelections();
@@ -152,32 +126,12 @@ export default class TopicThumbnailService extends Service {
         return this.manualDisplayMode;
       }
     }
-    if (minimalGridCategories.includes(viewingCategoryId)) {
-      return "minimal-grid";
-    } else if (blogStyleCategories.includes(viewingCategoryId)) {
-      return "blog-style";
-    } else if (cardCategories.includes(viewingCategoryId)) {
+    if (cardCategories.includes(viewingCategoryId)) {
       return "card-style";
-    } else if (masonryCategories.includes(viewingCategoryId)) {
-      return "masonry";
-    } else if (gridCategories.includes(viewingCategoryId)) {
-      return "grid";
-    } else if (listCategories.includes(viewingCategoryId)) {
-      return "list";
     } else if (compactCategories.includes(viewingCategoryId)) {
       return "compact-style";
-    } else if (masonryTags.includes(viewingTagName)) {
-      return "masonry";
-    } else if (minimalGridTags.includes(viewingTagName)) {
-      return "minimal-grid";
-    } else if (blogStyleTags.includes(viewingTagName)) {
-      return "blog-style";
     } else if (cardTags.includes(viewingTagName)) {
       return "card-style";
-    } else if (gridTags.includes(viewingTagName)) {
-      return "grid";
-    } else if (listTags.includes(viewingTagName)) {
-      return "list";
     } else if (compactTags.includes(viewingTagName)) {
       return "compact-style";
     } else if (isTopicListRoute) {
@@ -211,31 +165,6 @@ export default class TopicThumbnailService extends Service {
   }
 
   @discourseComputed("shouldDisplay", "displayMode")
-  displayMinimalGrid(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "minimal-grid";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayList(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "list";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayGrid(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "grid";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayMasonry(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "masonry";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayBlogStyle(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "blog-style";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
   displayCompactStyle(shouldDisplay, displayMode) {
     return shouldDisplay && displayMode === "compact-style";
   }
@@ -245,21 +174,8 @@ export default class TopicThumbnailService extends Service {
     return shouldDisplay && displayMode === "card-style";
   }
 
-  @discourseComputed("displayMinimalGrid")
-  showLikes(isMinimalGrid) {
-    return isMinimalGrid;
-  }
-
   get availableViewModes() {
-    const allModes = [
-      "minimal-grid",
-      "grid",
-      "masonry",
-      "list",
-      "blog-style",
-      "compact-style",
-      "card-style",
-    ];
+    const allModes = ["compact-style", "card-style"];
     const settingValue = (settings.view_selector_modes || "").trim();
     if (!settingValue) {
       return allModes;

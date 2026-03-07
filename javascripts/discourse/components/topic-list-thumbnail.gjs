@@ -7,12 +7,10 @@ import { on } from "@ember/modifier";
 import DropdownMenu from "discourse/components/dropdown-menu";
 import UserInfo from "discourse/components/user-info";
 import TopicStatus from "discourse/components/topic-status";
-import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import categoryLink from "discourse/helpers/category-link";
 import dIcon from "discourse/helpers/d-icon";
 import dirSpan from "discourse/helpers/dir-span";
-import formatDate from "discourse/helpers/format-date";
 import FlagModal from "discourse/components/modal/flag";
 import { getAbsoluteURL } from "discourse/lib/get-url";
 import { clipboardCopy } from "discourse/lib/utilities";
@@ -109,8 +107,7 @@ export default class TopicListThumbnail extends Component {
       return 800;
     }
 
-    return this.topicThumbnails.displayList ||
-      this.topicThumbnails.displayCompactStyle
+    return this.topicThumbnails.displayCompactStyle
       ? settings.list_thumbnail_size
       : 400;
   }
@@ -721,88 +718,6 @@ export default class TopicListThumbnail extends Component {
           </DMenu>
         </div>
       </a>
-    {{else}}
-      <div
-        class={{concatClass
-          "topic-list-thumbnail"
-          (if this.hasThumbnail "has-thumbnail" "no-thumbnail")
-        }}
-      >
-        <a href={{this.url}} role="img" aria-label={{this.topic.title}}>
-          {{#if this.hasThumbnail}}
-            <img
-              class="background-thumbnail"
-              src={{this.fallbackSrc}}
-              srcset={{this.srcSet}}
-              width={{this.width}}
-              height={{this.height}}
-              loading="lazy"
-              decoding="async"
-              alt=""
-            />
-            <img
-              class="main-thumbnail"
-              src={{this.fallbackSrc}}
-              srcset={{this.srcSet}}
-              width={{this.width}}
-              height={{this.height}}
-              loading="lazy"
-              decoding="async"
-              alt=""
-            />
-          {{else}}
-            <div class="thumbnail-placeholder">
-              {{dIcon this.placeholderIcon}}
-            </div>
-          {{/if}}
-        </a>
-      </div>
-    {{/if}}
-
-    {{#if this.topicThumbnails.showLikes}}
-      <div class="topic-thumbnail-likes">
-        {{dIcon "heart"}}
-        <span class="number">
-          {{this.topic.like_count}}
-        </span>
-      </div>
-    {{/if}}
-
-    {{#if this.topicThumbnails.displayBlogStyle}}
-      <div class="topic-thumbnail-blog-data">
-        <div class="topic-thumbnail-blog-data-views">
-          {{dIcon "eye"}}
-          <span class="number">
-            {{this.topic.views}}
-          </span>
-        </div>
-        <div class="topic-thumbnail-blog-data-likes">
-          {{dIcon "heart"}}
-          <span class="number">
-            {{this.topic.like_count}}
-          </span>
-        </div>
-        <div class="topic-thumbnail-blog-data-comments">
-          {{dIcon "comment"}}
-          <span class="number">
-            {{this.topic.reply_count}}
-          </span>
-        </div>
-        <div
-          class={{concatClass
-            "topic-thumbnail-blog-data-activity"
-            "activity"
-            (coldAgeClass
-              this.topic.createdAt startDate=this.topic.bumpedAt class=""
-            )
-          }}
-          title={{this.topic.bumpedAtTitle}}
-        >
-          <a class="post-activity" href={{this.topic.lastPostUrl}}>
-            {{~formatDate this.topic.bumpedAt format="tiny" noTitle="true"~}}
-          </a>
-        </div>
-      </div>
     {{/if}}
   </template>
 }

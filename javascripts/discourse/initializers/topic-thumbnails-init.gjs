@@ -7,17 +7,7 @@ export default apiInitializer((api) => {
   const ttService = api.container.lookup("service:topic-thumbnails");
 
   api.registerValueTransformer("topic-list-class", ({ value }) => {
-    if (ttService.displayMinimalGrid) {
-      value.push("topic-thumbnails-minimal");
-    } else if (ttService.displayGrid) {
-      value.push("topic-thumbnails-grid");
-    } else if (ttService.displayList) {
-      value.push("topic-thumbnails-list");
-    } else if (ttService.displayMasonry) {
-      value.push("topic-thumbnails-masonry");
-    } else if (ttService.displayBlogStyle) {
-      value.push("topic-thumbnails-blog-style-grid");
-    } else if (ttService.displayCompactStyle) {
+    if (ttService.displayCompactStyle) {
       value.push("topic-thumbnails-compact");
     } else if (ttService.displayCardStyle) {
       value.push("topic-thumbnails-card-style");
@@ -26,55 +16,27 @@ export default apiInitializer((api) => {
   });
 
   api.registerValueTransformer("topic-list-columns", ({ value: columns }) => {
-    if (
-      ttService.enabledForRoute &&
-      !ttService.displayList &&
-      !ttService.displayCompactStyle &&
-      !ttService.displayCardStyle
-    ) {
-      columns.add(
-        "thumbnail",
-        { item: TopicListThumbnail },
-        { before: "topic" }
-      );
-    }
     return columns;
   });
 
   api.renderInOutlet(
     "topic-list-before-link",
     <template>
-      {{#if ttService.displayList}}
+      {{#if ttService.displayCompactStyle}}
         <TopicListThumbnail @topic={{@outletArgs.topic}} />
-      {{else}}
-        {{#if ttService.displayCompactStyle}}
-          <TopicListThumbnail @topic={{@outletArgs.topic}} />
-        {{else}}
-          {{#if ttService.displayCardStyle}}
-            <TopicListThumbnail @topic={{@outletArgs.topic}} />
-          {{/if}}
-        {{/if}}
+      {{else if ttService.displayCardStyle}}
+        <TopicListThumbnail @topic={{@outletArgs.topic}} />
       {{/if}}
     </template>
   );
 
   api.registerValueTransformer("topic-list-item-mobile-layout", ({ value }) => {
-    if (ttService.enabledForRoute && !ttService.displayList) {
+    if (ttService.enabledForRoute) {
       // Force the desktop layout
       return false;
     }
     return value;
   });
-
-  api.registerValueTransformer(
-    "topic-list-item-class",
-    ({ value, context: { index } }) => {
-      if (ttService.displayMasonry) {
-        value.push(`masonry-${index}`);
-      }
-      return value;
-    }
-  );
 
   const siteSettings = api.container.lookup("service:site-settings");
   if (settings.docs_thumbnail_mode !== "none" && siteSettings.docs_enabled) {
@@ -82,19 +44,9 @@ export default apiInitializer((api) => {
       pluginId: "topic-thumbnails",
       topicThumbnailsService: service("topic-thumbnails"),
       classNameBindings: [
-        "isMinimalGrid:topic-thumbnails-minimal",
-        "isThumbnailGrid:topic-thumbnails-grid",
-        "isThumbnailList:topic-thumbnails-list",
-        "isMasonryList:topic-thumbnails-masonry",
-        "isBlogStyleGrid:topic-thumbnails-blog-style-grid",
         "isCompactStyle:topic-thumbnails-compact",
         "isCardStyle:topic-thumbnails-card-style",
       ],
-      isMinimalGrid: readOnly("topicThumbnailsService.displayMinimalGrid"),
-      isThumbnailGrid: readOnly("topicThumbnailsService.displayGrid"),
-      isThumbnailList: readOnly("topicThumbnailsService.displayList"),
-      isMasonryList: readOnly("topicThumbnailsService.displayMasonry"),
-      isBlogStyleGrid: readOnly("topicThumbnailsService.displayBlogStyle"),
       isCompactStyle: readOnly("topicThumbnailsService.displayCompactStyle"),
       isCardStyle: readOnly("topicThumbnailsService.displayCardStyle"),
     });
