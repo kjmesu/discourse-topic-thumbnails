@@ -343,7 +343,7 @@
   margin-left: 0.35em;
 
   .inline-user-feedback__star {
-    color: #ffa500;
+    color: var(--tertiary);
     font-size: inherit;
     line-height: inherit;
   }
@@ -766,7 +766,7 @@
   border-radius: 0.5em;
   border: 1px solid var(--primary-low);
   background-color: var(--secondary);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-dropdown);
   padding: 0.35em;
 }
 
@@ -864,11 +864,11 @@
     }
 
     &--up.is-active {
-      color: #ff4500;
+      color: var(--danger);
     }
 
     &--down.is-active {
-      color: #6f79ff;
+      color: var(--tertiary-medium);
     }
   }
 
