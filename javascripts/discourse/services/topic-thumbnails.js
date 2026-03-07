@@ -48,8 +48,18 @@ export default class TopicThumbnailService extends Service {
   @service keyValueStore;
 
   @tracked manualSelectionsVersion = 0;
+  @tracked _manualSelections = null;
 
-  manualSelections = this.#loadManualSelections();
+  get manualSelections() {
+    if (this._manualSelections === null) {
+      this._manualSelections = this.#loadManualSelections();
+    }
+    return this._manualSelections;
+  }
+
+  set manualSelections(value) {
+    this._manualSelections = value;
+  }
 
   @cached
   get enabledCategoriesList() {
@@ -211,7 +221,8 @@ export default class TopicThumbnailService extends Service {
 
   #persistManualSelections() {
     try {
-      this.keyValueStore.setItem(STORAGE_KEY, this.manualSelections || {});
+      const dataToStore = this.manualSelections || {};
+      this.keyValueStore.setObject({ key: STORAGE_KEY, value: dataToStore });
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn("Failed to persist topic thumbnail manual selection", e);
@@ -220,7 +231,7 @@ export default class TopicThumbnailService extends Service {
 
   #loadManualSelections() {
     try {
-      const data = this.keyValueStore.getItem(STORAGE_KEY);
+      const data = this.keyValueStore.getObject(STORAGE_KEY);
       if (data && typeof data === "object") {
         return data;
       }
