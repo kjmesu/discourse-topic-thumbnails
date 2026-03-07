@@ -175,19 +175,7 @@ export default class TopicThumbnailService extends Service {
   }
 
   get availableViewModes() {
-    const allModes = ["compact-style", "card-style"];
-    const settingValue = (settings.view_selector_modes || "").trim();
-    if (!settingValue) {
-      return allModes;
-    }
-
-    const allowed = settingValue
-      .split("|")
-      .map((m) => m.trim())
-      .filter(Boolean);
-
-    const filtered = allModes.filter((mode) => allowed.includes(mode));
-    return filtered.length ? filtered : allModes;
+    return ["compact-style", "card-style"];
   }
 
   setManualDisplayMode(mode) {

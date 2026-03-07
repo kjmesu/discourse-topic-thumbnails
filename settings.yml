@@ -71,13 +71,6 @@ list_thumbnail_size:
     - 400
     - 800
 
-view_selector_modes:
-  default: ""
-  type: list
-  choices:
-    - compact-style
-    - card-style
-
 show_user_feedback:
   default: false
   client: true
