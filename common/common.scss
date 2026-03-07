@@ -130,19 +130,20 @@
     border: 0;
   }
 
-  .bulk-select,
-  .posters,
-  .num.views,
-  .num.likes,
-  .num.op-likes {
-    display: none !important;
+  // Hide default topic list columns
+  .topic-list-item .bulk-select,
+  .topic-list-item .posters,
+  .topic-list-item .num.views,
+  .topic-list-item .num.likes,
+  .topic-list-item .num.op-likes {
+    display: none;
   }
 
-  .main-link {
+  .topic-list-item > td.main-link {
     grid-area: topic;
     grid-column: 1 / -1;
     grid-row: 1 / -1;
-    padding: 0 !important;
+    padding: 0;
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto auto;
@@ -203,9 +204,9 @@
     grid-area: author;
   }
 
-  .num.posts,
-  .activity {
-    display: none !important;
+  .topic-list-item .num.posts,
+  .topic-list-item .activity {
+    display: none;
   }
 
   .link-top-line {
@@ -292,8 +293,8 @@
   .topic-card__activity,
   .topic-compact-author__activity {
     * {
-      font-size: inherit !important;
-      line-height: inherit !important;
+      font-size: inherit;
+      line-height: inherit;
     }
   }
 
@@ -310,7 +311,7 @@
     .badge-category,
     .badge-category__name {
       margin: 0;
-      font-size: inherit !important;
+      font-size: inherit;
       line-height: inherit;
     }
 
@@ -483,7 +484,7 @@
   .topic-list .likes,
   .topic-list .views,
   .topic-list .activity {
-    display: none !important;
+    display: none;
   }
 
   .topic-list-body {
@@ -496,19 +497,25 @@
     padding: 0;
     border: none;
 
-    > * {
-      display: none !important;
+    > td,
+    > td.bulk-select,
+    > td.posters,
+    > td.posts,
+    > td.views,
+    > td.activity {
+      display: none;
       border: 0;
     }
 
-    > td:first-child {
-      display: block !important;
+    > td:first-child,
+    > td.main-link {
+      display: block;
       width: 100%;
-      padding-left: 0 !important;
-      padding-right: 0 !important;
+      padding-left: 0;
+      padding-right: 0;
 
       .pull-left {
-        display: block !important;
+        display: block;
       }
 
       .link-top-line,
@@ -517,7 +524,7 @@
       .discourse-tags,
       .topic-post-badges,
       .topic-excerpt {
-        display: none !important;
+        display: none;
       }
     }
   }
