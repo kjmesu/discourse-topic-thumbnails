@@ -1,10 +1,10 @@
-import { tracked } from "@glimmer/tracking";
+import { tracked, cached } from "@glimmer/tracking";
 import { dependentKeyCompat } from "@ember/object/compat";
 import Service, { service } from "@ember/service";
 import discourseComputed from "discourse/lib/decorators";
 import Site from "discourse/models/site";
 
-const LOCAL_STORAGE_KEY = "topic-thumbnails-manual-modes";
+const STORAGE_KEY = "topic-thumbnails-manual-modes";
 
 const compactCategories = settings.compact_categories
   .split("|")
@@ -45,11 +45,13 @@ const categoryPlaceholderMap = (() => {
 export default class TopicThumbnailService extends Service {
   @service router;
   @service discovery;
+  @service keyValueStore;
 
   @tracked manualSelectionsVersion = 0;
 
   manualSelections = this.#loadManualSelections();
 
+  @cached
   get enabledCategoriesList() {
     return enabledCategories;
   }
@@ -63,14 +65,14 @@ export default class TopicThumbnailService extends Service {
     return this.discovery.onDiscoveryRoute;
   }
 
-  @discourseComputed("router.currentRouteName")
-  isTopicRoute(currentRouteName) {
-    return currentRouteName.match(/^topic\./);
+  @cached
+  get isTopicRoute() {
+    return this.router.currentRouteName.match(/^topic\./);
   }
 
-  @discourseComputed("router.currentRouteName")
-  isDocsRoute(currentRouteName) {
-    return currentRouteName.match(/^docs\./);
+  @cached
+  get isDocsRoute() {
+    return this.router.currentRouteName.match(/^docs\./);
   }
 
   @dependentKeyCompat
@@ -208,14 +210,8 @@ export default class TopicThumbnailService extends Service {
   }
 
   #persistManualSelections() {
-    if (typeof localStorage === "undefined") {
-      return;
-    }
     try {
-      localStorage.setItem(
-        LOCAL_STORAGE_KEY,
-        JSON.stringify(this.manualSelections || {})
-      );
+      this.keyValueStore.setItem(STORAGE_KEY, this.manualSelections || {});
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn("Failed to persist topic thumbnail manual selection", e);
@@ -223,24 +219,15 @@ export default class TopicThumbnailService extends Service {
   }
 
   #loadManualSelections() {
-    if (typeof localStorage === "undefined") {
-      return {};
-    }
-
     try {
-      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (!raw) {
-        return {};
-      }
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") {
-        return parsed;
+      const data = this.keyValueStore.getItem(STORAGE_KEY);
+      if (data && typeof data === "object") {
+        return data;
       }
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn("Failed to load topic thumbnail manual selections", e);
     }
-
     return {};
   }
 }
