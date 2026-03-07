@@ -213,10 +213,6 @@ export default class TopicThumbnailService extends Service {
     }
     this.manualSelectionsVersion++;
     this.#persistManualSelections();
-
-    if (typeof this.router?.refresh === "function") {
-      this.router.refresh();
-    }
   }
 
   #persistManualSelections() {
