@@ -17,11 +17,7 @@ export default class TopicViewModeSelector extends Component {
 
   get showSelector() {
     const tt = this.topicThumbnails;
-    return (
-      tt?.enabledForRoute &&
-      tt?.enabledForDevice &&
-      (tt?.availableViewModes?.length || 0) > 1
-    );
+    return tt?.enabledForRoute && tt?.enabledForDevice;
   }
 
   get buttonLabel() {

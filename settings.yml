@@ -1,12 +1,7 @@
 default_thumbnail_mode:
-  default: grid
+  default: compact-style
   type: enum
   choices:
-    - minimal-grid
-    - grid
-    - masonry
-    - list
-    - blog-style
     - compact-style
     - card-style
     - none
@@ -15,38 +10,9 @@ docs_thumbnail_mode:
   default: none
   type: enum
   choices:
-    - minimal-grid
-    - grid
-    - list
-    - blog-style
     - compact-style
     - card-style
     - none
-
-blog_style_categories:
-  type: list
-  list_type: category
-  default: ""
-
-minimal_grid_categories:
-  type: list
-  list_type: category
-  default: ""
-
-grid_categories:
-  type: list
-  list_type: category
-  default: ""
-
-masonry_categories:
-  type: list
-  list_type: category
-  default: ""
-
-list_categories:
-  type: list
-  list_type: category
-  default: ""
 
 compact_categories:
   type: list
@@ -69,31 +35,6 @@ category_placeholder_icons:
   default: ""
   description: "Override placeholder icon for specific categories. Format: categoryId:iconName|categoryId2:iconName2 (e.g., 5:image|7:camera|12:file). Use FontAwesome icon names without 'fa-' prefix. Note: Custom icons must be registered in about.json svg_icons array or in site settings (Admin → Settings → svg_icon_subset)."
 
-blog_style_tags:
-  type: list
-  list_type: tag
-  default: ""
-
-minimal_grid_tags:
-  type: list
-  list_type: tag
-  default: ""
-
-grid_tags:
-  type: list
-  list_type: tag
-  default: ""
-
-masonry_tags:
-  type: list
-  list_type: tag
-  default: ""
-
-list_tags:
-  type: list
-  list_type: tag
-  default: ""
-
 compact_tags:
   type: list
   list_type: tag
@@ -109,11 +50,6 @@ suggested_topics_mode:
   type: enum
   choices:
     - ""
-    - minimal-grid
-    - grid
-    - masonry
-    - list
-    - blog-style
     - compact-style
     - card-style
     - none
@@ -134,18 +70,6 @@ list_thumbnail_size:
     - 200
     - 400
     - 800
-
-view_selector_modes:
-  default: ""
-  type: list
-  choices:
-    - minimal-grid
-    - grid
-    - masonry
-    - list
-    - blog-style
-    - compact-style
-    - card-style
 
 show_user_feedback:
   default: false

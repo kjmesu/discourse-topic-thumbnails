@@ -1,18 +1,7 @@
 import Component from "@glimmer/component";
 import EmberObject, { action } from "@ember/object";
-import { tracked } from "@glimmer/tracking";
+import { cached, tracked } from "@glimmer/tracking";
 import { service } from "@ember/service";
-import { fn } from "@ember/helper";
-import { on } from "@ember/modifier";
-import DropdownMenu from "discourse/components/dropdown-menu";
-import UserInfo from "discourse/components/user-info";
-import TopicStatus from "discourse/components/topic-status";
-import coldAgeClass from "discourse/helpers/cold-age-class";
-import concatClass from "discourse/helpers/concat-class";
-import categoryLink from "discourse/helpers/category-link";
-import dIcon from "discourse/helpers/d-icon";
-import dirSpan from "discourse/helpers/dir-span";
-import formatDate from "discourse/helpers/format-date";
 import FlagModal from "discourse/components/modal/flag";
 import { getAbsoluteURL } from "discourse/lib/get-url";
 import { clipboardCopy } from "discourse/lib/utilities";
@@ -26,11 +15,11 @@ import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
 import Bookmark from "discourse/models/bookmark";
 import TopicVoteControls from "./topic-vote-controls";
-import DMenu from "discourse/float-kit/components/d-menu";
-import InlineUserFeedback from "./inline-user-feedback";
-import formatDateAlwaysRelative from "../helpers/format-date-always-relative";
+import CardView from "./topic-list/card-view";
+import CompactView from "./topic-list/compact-view";
 
 const OVERFLOW_EVENT = "topic-thumbnails:overflow-open";
+const RESPONSIVE_RATIOS = [1, 1.5, 2];
 
 export default class TopicListThumbnail extends Component {
   topicVoteControlsComponent = TopicVoteControls;
@@ -47,12 +36,11 @@ export default class TopicListThumbnail extends Component {
   #overflowListener;
   #compactOverflowMenu;
 
-  responsiveRatios = [1, 1.5, 2];
-
   get optimizedThumbnails() {
     return this.topic.thumbnails?.filter((t) => t.max_width !== null) || [];
   }
 
+  @cached
   get sortedOptimizedThumbnails() {
     return [...this.optimizedThumbnails].sort(
       (a, b) => a.max_width - b.max_width
@@ -100,7 +88,8 @@ export default class TopicListThumbnail extends Component {
 
   get placeholderIcon() {
     const categoryId = this.topic.category_id;
-    const customIcon = this.topicThumbnails.getPlaceholderIconForCategory(categoryId);
+    const customIcon =
+      this.topicThumbnails.getPlaceholderIconForCategory(categoryId);
     return customIcon || settings.placeholder_icon;
   }
 
@@ -109,16 +98,16 @@ export default class TopicListThumbnail extends Component {
       return 800;
     }
 
-    return this.topicThumbnails.displayList ||
-      this.topicThumbnails.displayCompactStyle
+    return this.topicThumbnails.displayCompactStyle
       ? settings.list_thumbnail_size
       : 400;
   }
 
+  @cached
   get srcSet() {
     const srcSetArray = [];
 
-    this.responsiveRatios.forEach((ratio) => {
+    RESPONSIVE_RATIOS.forEach((ratio) => {
       const target = ratio * this.displayWidth;
       const match = this.optimizedThumbnails.find(
         (t) => t.url && t.max_width === target
@@ -138,19 +127,23 @@ export default class TopicListThumbnail extends Component {
     return srcSetArray.join(",");
   }
 
+  @cached
   get smallestOptimized() {
     const smallest = this.sortedOptimizedThumbnails.find((t) => t.url);
     return smallest || this.topic.thumbnails?.[0];
   }
 
+  @cached
   get width() {
     return this.smallestOptimized?.width;
   }
 
+  @cached
   get height() {
     return this.smallestOptimized?.height;
   }
 
+  @cached
   get fallbackSrc() {
     const minWidth = this.displayWidth * 2;
     const largeEnough = this.sortedOptimizedThumbnails.find(
@@ -166,12 +159,6 @@ export default class TopicListThumbnail extends Component {
       .find((t) => t.url);
 
     return largest?.url;
-  }
-
-  get url() {
-    return this.topic.get("linked_post_number")
-      ? this.topic.urlForPostNumber(this.topic.get("linked_post_number"))
-      : this.topic.get("lastUnreadUrl");
   }
 
   get firstPostUrl() {
@@ -227,15 +214,6 @@ export default class TopicListThumbnail extends Component {
 
   get compactOverflowIdentifier() {
     return this.#compactOverflowKey();
-  }
-
-  get commentsCount() {
-    const posts = this.topic.posts_count;
-    if (typeof posts === "number" && posts > 0) {
-      return Math.max(posts - 1, 0);
-    }
-
-    return 0;
   }
 
   @action
@@ -356,18 +334,6 @@ export default class TopicListThumbnail extends Component {
     });
   }
 
-  @action
-  toggleCompactOverflow(event) {
-    event?.preventDefault();
-    event?.stopPropagation();
-    const willOpen = !this.isCompactOverflowOpen;
-    this.closeOverflowMenus();
-    if (willOpen) {
-      this.isCompactOverflowOpen = true;
-      this.#announceCompactOverflow();
-    }
-  }
-
   closeOverflowMenus() {
     this.isCompactOverflowOpen = false;
     this.#compactOverflowMenu?.close?.({ focusTrigger: false });
@@ -414,7 +380,9 @@ export default class TopicListThumbnail extends Component {
     }
 
     const target = event.target;
-    const isInteractive = target.closest('a, button, [role="button"], .topic-vote-button, .topic-votes');
+    const isInteractive = target.closest(
+      'a, button, [role="button"], .topic-vote-button, .topic-votes'
+    );
 
     if (!isInteractive) {
       event.preventDefault();
@@ -429,7 +397,9 @@ export default class TopicListThumbnail extends Component {
     }
 
     const target = event.target;
-    const isInteractive = target.closest('a, button, [role="button"], .topic-vote-button, .topic-votes, .d-menu');
+    const isInteractive = target.closest(
+      'a, button, [role="button"], .topic-vote-button, .topic-votes, .d-menu'
+    );
 
     if (!isInteractive) {
       event.preventDefault();
@@ -439,370 +409,58 @@ export default class TopicListThumbnail extends Component {
 
   <template>
     {{#if this.topicThumbnails.displayCardStyle}}
-      <article class="topic-card">
-        <a href={{this.firstPostUrl}} class="topic-card__link" {{on "click" this.handleCardClick}} {{on "auxclick" this.handleCardClick}}>
-          {{#if this.showCardAuthor}}
-            <div class="topic-card__header">
-              <div class="topic-card__author topic-author">
-                <UserInfo
-                  @user={{this.topic.creator}}
-                  @includeLink={{true}}
-                  @includeAvatar={{true}}
-                  @size="small"
-                  class="topic-card__author-user topic-author__user"
-                />
-                {{#if this.showUserFeedback}}
-                  <InlineUserFeedback
-                    @shouldRender={{true}}
-                    @rating={{this.topic.creator.average_rating}}
-                    @count={{this.topic.creator.total_trade_count}}
-                  />
-                {{/if}}
-                <span class="topic-card__activity topic-author__activity">
-                  <span
-                    class="topic-author__relative-date"
-                    style="font-size: inherit; line-height: inherit;"
-                  >
-                    {{formatDateAlwaysRelative this.topic.createdAt}}
-                  </span>
-                </span>
-                {{#if this.showCategory}}
-                  <span class="topic-card__category topic-author__category">
-                    {{categoryLink this.topic.category}}
-                  </span>
-                {{/if}}
-              </div>
-            </div>
-          {{/if}}
-
-          <h3 class="topic-card__title">
-            <TopicStatus @topic={{this.topic}} />
-            <span>{{this.topic.title}}</span>
-          </h3>
-
-          {{#if this.hasThumbnail}}
-            <div class="topic-card__thumbnail">
-              <img
-                class="background-thumbnail"
-                src={{this.fallbackSrc}}
-                srcset={{this.srcSet}}
-                width={{this.width}}
-                height={{this.height}}
-                loading="lazy"
-                decoding="async"
-                alt=""
-                aria-hidden="true"
-              />
-              <img
-                class="main-thumbnail"
-                src={{this.fallbackSrc}}
-                srcset={{this.srcSet}}
-                width={{this.width}}
-                height={{this.height}}
-                loading="lazy"
-                decoding="async"
-                alt=""
-              />
-            </div>
-          {{else if this.topic.hasExcerpt}}
-            <div class="topic-card__excerpt">
-              {{dirSpan this.topic.escapedExcerpt htmlSafe="true"}}
-            </div>
-          {{else}}
-            <div class="topic-card__thumbnail">
-              <div class="thumbnail-placeholder">
-                {{dIcon this.placeholderIcon}}
-              </div>
-            </div>
-          {{/if}}
-
-          <div class="topic-card__meta topic-meta">
-            <this.topicVoteControlsComponent @topic={{this.topic}} />
-            <span class="topic-card__meta-comments topic-meta__comments">
-              {{dIcon "far-comment"}}
-              {{this.commentsCount}}
-            </span>
-            <div class="topic-card__meta-actions topic-meta__actions">
-              <span
-                role="button"
-                tabindex="0"
-                class="topic-card__meta-action topic-meta__action"
-                {{on "click" this.copyTopicLink}}
-                {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
-              >
-                {{dIcon "share"}}
-                {{i18n "post.controls.share_action"}}
-              </span>
-              <span
-                role="button"
-                tabindex="0"
-                class="topic-card__meta-action topic-meta__action"
-                {{on "click" this.toggleSave}}
-                {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
-              >
-                {{#if this.isBookmarked}}
-                  {{dIcon "bookmark"}}
-                {{else}}
-                  {{dIcon "far-bookmark"}}
-                {{/if}}
-              </span>
-              <span
-                role="button"
-                tabindex="0"
-                class="topic-card__meta-action topic-meta__action"
-                {{on "click" this.reportTopic}}
-                {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
-              >
-                {{dIcon "flag"}}
-              </span>
-            </div>
-          </div>
-        </a>
-      </article>
+      <CardView
+        @topic={{this.topic}}
+        @topicVoteControls={{this.topicVoteControlsComponent}}
+        @firstPostUrl={{this.firstPostUrl}}
+        @hasThumbnail={{this.hasThumbnail}}
+        @fallbackSrc={{this.fallbackSrc}}
+        @srcSet={{this.srcSet}}
+        @width={{this.width}}
+        @height={{this.height}}
+        @placeholderIcon={{this.placeholderIcon}}
+        @showAuthor={{this.showCardAuthor}}
+        @showUserFeedback={{this.showUserFeedback}}
+        @showCategory={{this.showCategory}}
+        @isBookmarked={{this.isBookmarked}}
+        @onClick={{this.handleCardClick}}
+        @onShare={{this.copyTopicLink}}
+        @onSave={{this.toggleSave}}
+        @onReport={{this.reportTopic}}
+        @onKeydown={{this.handleActionKeydown}}
+      />
     {{else if this.topicThumbnails.displayCompactStyle}}
-      <a
-        href={{this.firstPostUrl}}
-        class="topic-thumbnail-compact-link"
-        aria-label={{this.topic.title}}
-        {{on "click" this.handleCompactClick}}
-        {{on "auxclick" this.handleCompactClick}}
-      >
-        <div
-          class={{concatClass
-            "topic-list-thumbnail"
-            (if this.hasThumbnail "has-thumbnail" "no-thumbnail")
-          }}
-        >
-          {{#if this.hasThumbnail}}
-            <img
-              class="background-thumbnail"
-              src={{this.fallbackSrc}}
-              srcset={{this.srcSet}}
-              width={{this.width}}
-              height={{this.height}}
-              loading="lazy"
-              decoding="async"
-              alt=""
-            />
-            <img
-              class="main-thumbnail"
-              src={{this.fallbackSrc}}
-              srcset={{this.srcSet}}
-              width={{this.width}}
-              height={{this.height}}
-              loading="lazy"
-              decoding="async"
-              alt=""
-            />
-          {{else}}
-            <div class="thumbnail-placeholder">
-              {{dIcon this.placeholderIcon}}
-            </div>
-          {{/if}}
-        </div>
-
-        {{#if this.showCompactAuthor}}
-          <div class="topic-compact-author topic-author">
-            <UserInfo
-              @user={{this.topic.creator}}
-              @includeLink={{true}}
-              @includeAvatar={{true}}
-              @size="small"
-              class="topic-compact-author__user topic-author__user"
-            />
-            {{#if this.showUserFeedback}}
-              <InlineUserFeedback
-                @shouldRender={{true}}
-                @rating={{this.topic.creator.average_rating}}
-                @count={{this.topic.creator.total_trade_count}}
-              />
-            {{/if}}
-            <span class="topic-compact-author__activity topic-author__activity">
-              <span
-                class="topic-author__relative-date"
-                style="font-size: inherit; line-height: inherit;"
-              >
-                {{formatDateAlwaysRelative this.topic.createdAt}}
-              </span>
-            </span>
-            {{#if this.showCategory}}
-              <span class="topic-compact-author__category topic-author__category">
-                {{categoryLink this.topic.category}}
-              </span>
-            {{/if}}
-          </div>
-        {{/if}}
-
-        <h3 class="topic-compact__title">
-          <TopicStatus @topic={{this.topic}} />
-          <span>{{this.topic.title}}</span>
-        </h3>
-
-        <div class="topic-compact-meta topic-meta">
-          <this.topicVoteControlsComponent @topic={{this.topic}} />
-          <span class="topic-compact-meta__comments topic-meta__comments">
-            {{this.commentsCount}}
-            {{this.commentsLabel}}
-          </span>
-          <div class="topic-compact-meta__actions topic-meta__actions">
-            <span
-              role="button"
-              tabindex="0"
-              class="topic-compact-meta__share topic-meta__action"
-              {{on "click" this.copyTopicLink}}
-              {{on "keydown" (fn this.handleActionKeydown this.copyTopicLink)}}
-            >
-              {{i18n "post.controls.share_action"}}
-            </span>
-            <span
-              role="button"
-              tabindex="0"
-              class="topic-compact-meta__action topic-compact-meta__action--save topic-meta__action"
-              {{on "click" this.toggleSave}}
-              {{on "keydown" (fn this.handleActionKeydown this.toggleSave)}}
-            >
-              {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
-            </span>
-            <span
-              role="button"
-              tabindex="0"
-              class="topic-compact-meta__action topic-compact-meta__action--report topic-meta__action"
-              {{on "click" this.reportTopic}}
-              {{on "keydown" (fn this.handleActionKeydown this.reportTopic)}}
-            >
-              {{this.reportLabel}}
-            </span>
-          </div>
-          <DMenu
-            @identifier={{this.compactOverflowIdentifier}}
-            @icon="ellipsis"
-            @ariaLabel={{i18n "topic_thumbnails.actions.more_actions"}}
-            @triggerClass="topic-compact-meta__overflow"
-            @modalForMobile={{true}}
-            @onRegisterApi={{this.registerCompactOverflowMenu}}
-            @onShow={{this.handleCompactOverflowShow}}
-            @onClose={{this.handleCompactOverflowClose}}
-          >
-            <:content>
-              <div class="topic-compact-meta__overflow-menu">
-                <DropdownMenu as |dropdown|>
-                  <dropdown.item>
-                    <button
-                      type="button"
-                      class="topic-compact-meta__overflow-item"
-                      {{on "click" this.overflowShare}}
-                    >
-                      {{dIcon "share"}}
-                      {{i18n "post.controls.share_action"}}
-                    </button>
-                  </dropdown.item>
-                  <dropdown.item>
-                    <button
-                      type="button"
-                      class="topic-compact-meta__overflow-item"
-                      {{on "click" this.overflowSave}}
-                    >
-                      {{if this.isBookmarked this.removeSaveLabel this.saveLabel}}
-                    </button>
-                  </dropdown.item>
-                  <dropdown.item>
-                    <button
-                      type="button"
-                      class="topic-compact-meta__overflow-item"
-                      {{on "click" this.overflowReport}}
-                    >
-                      {{dIcon "flag"}}
-                      {{this.reportLabel}}
-                    </button>
-                  </dropdown.item>
-                </DropdownMenu>
-              </div>
-            </:content>
-          </DMenu>
-        </div>
-      </a>
-    {{else}}
-      <div
-        class={{concatClass
-          "topic-list-thumbnail"
-          (if this.hasThumbnail "has-thumbnail" "no-thumbnail")
-        }}
-      >
-        <a href={{this.url}} role="img" aria-label={{this.topic.title}}>
-          {{#if this.hasThumbnail}}
-            <img
-              class="background-thumbnail"
-              src={{this.fallbackSrc}}
-              srcset={{this.srcSet}}
-              width={{this.width}}
-              height={{this.height}}
-              loading="lazy"
-              decoding="async"
-              alt=""
-            />
-            <img
-              class="main-thumbnail"
-              src={{this.fallbackSrc}}
-              srcset={{this.srcSet}}
-              width={{this.width}}
-              height={{this.height}}
-              loading="lazy"
-              decoding="async"
-              alt=""
-            />
-          {{else}}
-            <div class="thumbnail-placeholder">
-              {{dIcon this.placeholderIcon}}
-            </div>
-          {{/if}}
-        </a>
-      </div>
-    {{/if}}
-
-    {{#if this.topicThumbnails.showLikes}}
-      <div class="topic-thumbnail-likes">
-        {{dIcon "heart"}}
-        <span class="number">
-          {{this.topic.like_count}}
-        </span>
-      </div>
-    {{/if}}
-
-    {{#if this.topicThumbnails.displayBlogStyle}}
-      <div class="topic-thumbnail-blog-data">
-        <div class="topic-thumbnail-blog-data-views">
-          {{dIcon "eye"}}
-          <span class="number">
-            {{this.topic.views}}
-          </span>
-        </div>
-        <div class="topic-thumbnail-blog-data-likes">
-          {{dIcon "heart"}}
-          <span class="number">
-            {{this.topic.like_count}}
-          </span>
-        </div>
-        <div class="topic-thumbnail-blog-data-comments">
-          {{dIcon "comment"}}
-          <span class="number">
-            {{this.topic.reply_count}}
-          </span>
-        </div>
-        <div
-          class={{concatClass
-            "topic-thumbnail-blog-data-activity"
-            "activity"
-            (coldAgeClass
-              this.topic.createdAt startDate=this.topic.bumpedAt class=""
-            )
-          }}
-          title={{this.topic.bumpedAtTitle}}
-        >
-          <a class="post-activity" href={{this.topic.lastPostUrl}}>
-            {{~formatDate this.topic.bumpedAt format="tiny" noTitle="true"~}}
-          </a>
-        </div>
-      </div>
+      <CompactView
+        @topic={{this.topic}}
+        @topicVoteControls={{this.topicVoteControlsComponent}}
+        @firstPostUrl={{this.firstPostUrl}}
+        @hasThumbnail={{this.hasThumbnail}}
+        @fallbackSrc={{this.fallbackSrc}}
+        @srcSet={{this.srcSet}}
+        @width={{this.width}}
+        @height={{this.height}}
+        @placeholderIcon={{this.placeholderIcon}}
+        @showAuthor={{this.showCompactAuthor}}
+        @showUserFeedback={{this.showUserFeedback}}
+        @showCategory={{this.showCategory}}
+        @isBookmarked={{this.isBookmarked}}
+        @commentsLabel={{this.commentsLabel}}
+        @saveLabel={{this.saveLabel}}
+        @removeSaveLabel={{this.removeSaveLabel}}
+        @reportLabel={{this.reportLabel}}
+        @overflowIdentifier={{this.compactOverflowIdentifier}}
+        @onClick={{this.handleCompactClick}}
+        @onShare={{this.copyTopicLink}}
+        @onSave={{this.toggleSave}}
+        @onReport={{this.reportTopic}}
+        @onKeydown={{this.handleActionKeydown}}
+        @onOverflowShare={{this.overflowShare}}
+        @onOverflowSave={{this.overflowSave}}
+        @onOverflowReport={{this.overflowReport}}
+        @onRegisterOverflowMenu={{this.registerCompactOverflowMenu}}
+        @onOverflowShow={{this.handleCompactOverflowShow}}
+        @onOverflowClose={{this.handleCompactOverflowClose}}
+      />
     {{/if}}
   </template>
 }

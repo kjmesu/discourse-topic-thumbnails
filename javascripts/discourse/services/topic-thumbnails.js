@@ -1,18 +1,10 @@
-import { tracked } from "@glimmer/tracking";
+import { tracked, cached } from "@glimmer/tracking";
 import { dependentKeyCompat } from "@ember/object/compat";
 import Service, { service } from "@ember/service";
 import discourseComputed from "discourse/lib/decorators";
 import Site from "discourse/models/site";
 
-const LOCAL_STORAGE_KEY = "topic-thumbnails-manual-modes";
-
-const minimalGridCategories = settings.minimal_grid_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const listCategories = settings.list_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
+const STORAGE_KEY = "topic-thumbnails-manual-modes";
 
 const compactCategories = settings.compact_categories
   .split("|")
@@ -22,25 +14,8 @@ const cardCategories = settings.card_categories
   .split("|")
   .map((id) => parseInt(id, 10));
 
-const gridCategories = settings.grid_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const masonryCategories = settings.masonry_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const blogStyleCategories = settings.blog_style_categories
-  .split("|")
-  .map((id) => parseInt(id, 10));
-
-const minimalGridTags = settings.minimal_grid_tags.split("|");
-const listTags = settings.list_tags.split("|");
 const compactTags = settings.compact_tags.split("|");
 const cardTags = settings.card_tags.split("|");
-const gridTags = settings.grid_tags.split("|");
-const masonryTags = settings.masonry_tags.split("|");
-const blogStyleTags = settings.blog_style_tags.split("|");
 
 const enabledCategories = settings.enabled_categories
   .split("|")
@@ -70,12 +45,23 @@ const categoryPlaceholderMap = (() => {
 export default class TopicThumbnailService extends Service {
   @service router;
   @service discovery;
+  @service keyValueStore;
 
-  @tracked masonryContainerWidth;
   @tracked manualSelectionsVersion = 0;
+  @tracked _manualSelections = null;
 
-  manualSelections = this.#loadManualSelections();
+  get manualSelections() {
+    if (this._manualSelections === null) {
+      this._manualSelections = this.#loadManualSelections();
+    }
+    return this._manualSelections;
+  }
 
+  set manualSelections(value) {
+    this._manualSelections = value;
+  }
+
+  @cached
   get enabledCategoriesList() {
     return enabledCategories;
   }
@@ -89,14 +75,14 @@ export default class TopicThumbnailService extends Service {
     return this.discovery.onDiscoveryRoute;
   }
 
-  @discourseComputed("router.currentRouteName")
-  isTopicRoute(currentRouteName) {
-    return currentRouteName.match(/^topic\./);
+  @cached
+  get isTopicRoute() {
+    return this.router.currentRouteName.match(/^topic\./);
   }
 
-  @discourseComputed("router.currentRouteName")
-  isDocsRoute(currentRouteName) {
-    return currentRouteName.match(/^docs\./);
+  @cached
+  get isDocsRoute() {
+    return this.router.currentRouteName.match(/^docs\./);
   }
 
   @dependentKeyCompat
@@ -152,32 +138,12 @@ export default class TopicThumbnailService extends Service {
         return this.manualDisplayMode;
       }
     }
-    if (minimalGridCategories.includes(viewingCategoryId)) {
-      return "minimal-grid";
-    } else if (blogStyleCategories.includes(viewingCategoryId)) {
-      return "blog-style";
-    } else if (cardCategories.includes(viewingCategoryId)) {
+    if (cardCategories.includes(viewingCategoryId)) {
       return "card-style";
-    } else if (masonryCategories.includes(viewingCategoryId)) {
-      return "masonry";
-    } else if (gridCategories.includes(viewingCategoryId)) {
-      return "grid";
-    } else if (listCategories.includes(viewingCategoryId)) {
-      return "list";
     } else if (compactCategories.includes(viewingCategoryId)) {
       return "compact-style";
-    } else if (masonryTags.includes(viewingTagName)) {
-      return "masonry";
-    } else if (minimalGridTags.includes(viewingTagName)) {
-      return "minimal-grid";
-    } else if (blogStyleTags.includes(viewingTagName)) {
-      return "blog-style";
     } else if (cardTags.includes(viewingTagName)) {
       return "card-style";
-    } else if (gridTags.includes(viewingTagName)) {
-      return "grid";
-    } else if (listTags.includes(viewingTagName)) {
-      return "list";
     } else if (compactTags.includes(viewingTagName)) {
       return "compact-style";
     } else if (isTopicListRoute) {
@@ -211,31 +177,6 @@ export default class TopicThumbnailService extends Service {
   }
 
   @discourseComputed("shouldDisplay", "displayMode")
-  displayMinimalGrid(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "minimal-grid";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayList(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "list";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayGrid(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "grid";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayMasonry(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "masonry";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
-  displayBlogStyle(shouldDisplay, displayMode) {
-    return shouldDisplay && displayMode === "blog-style";
-  }
-
-  @discourseComputed("shouldDisplay", "displayMode")
   displayCompactStyle(shouldDisplay, displayMode) {
     return shouldDisplay && displayMode === "compact-style";
   }
@@ -245,33 +186,8 @@ export default class TopicThumbnailService extends Service {
     return shouldDisplay && displayMode === "card-style";
   }
 
-  @discourseComputed("displayMinimalGrid")
-  showLikes(isMinimalGrid) {
-    return isMinimalGrid;
-  }
-
   get availableViewModes() {
-    const allModes = [
-      "minimal-grid",
-      "grid",
-      "masonry",
-      "list",
-      "blog-style",
-      "compact-style",
-      "card-style",
-    ];
-    const settingValue = (settings.view_selector_modes || "").trim();
-    if (!settingValue) {
-      return allModes;
-    }
-
-    const allowed = settingValue
-      .split("|")
-      .map((m) => m.trim())
-      .filter(Boolean);
-
-    const filtered = allModes.filter((mode) => allowed.includes(mode));
-    return filtered.length ? filtered : allModes;
+    return ["compact-style", "card-style"];
   }
 
   setManualDisplayMode(mode) {
@@ -297,21 +213,12 @@ export default class TopicThumbnailService extends Service {
     }
     this.manualSelectionsVersion++;
     this.#persistManualSelections();
-
-    if (typeof this.router?.refresh === "function") {
-      this.router.refresh();
-    }
   }
 
   #persistManualSelections() {
-    if (typeof localStorage === "undefined") {
-      return;
-    }
     try {
-      localStorage.setItem(
-        LOCAL_STORAGE_KEY,
-        JSON.stringify(this.manualSelections || {})
-      );
+      const dataToStore = this.manualSelections || {};
+      this.keyValueStore.setObject({ key: STORAGE_KEY, value: dataToStore });
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn("Failed to persist topic thumbnail manual selection", e);
@@ -319,24 +226,15 @@ export default class TopicThumbnailService extends Service {
   }
 
   #loadManualSelections() {
-    if (typeof localStorage === "undefined") {
-      return {};
-    }
-
     try {
-      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (!raw) {
-        return {};
-      }
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") {
-        return parsed;
+      const data = this.keyValueStore.getObject(STORAGE_KEY);
+      if (data && typeof data === "object") {
+        return data;
       }
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn("Failed to load topic thumbnail manual selections", e);
     }
-
     return {};
   }
 }
