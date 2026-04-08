@@ -80,7 +80,7 @@ export default class TopicVoteControls extends Component {
 
   get shouldRender() {
     return (
-      hasPostVoteControls &&
+      hasPostVoteControls() &&
       this.votingEnabledForTopic &&
       Boolean(this.post)
     );
