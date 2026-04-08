@@ -1,23 +1,16 @@
-/* global requirejs */
-
 import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { fn } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { htmlSafe } from "@ember/template";
 import concatClass from "discourse/helpers/concat-class";
+import { optionalRequire } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
 
 const POST_VOTE_CONTROLS_PATH =
   "discourse/plugins/discourse-post-voting-reddit-mode/discourse/components/post-votes-vote-controls";
 
-let BasePostVotesControls;
-
-try {
-  BasePostVotesControls = window.requirejs(POST_VOTE_CONTROLS_PATH).default;
-} catch {
-  // discourse-post-voting-reddit-mode is not installed
-}
+const BasePostVotesControls = optionalRequire(POST_VOTE_CONTROLS_PATH);
 
 export const hasPostVoteControls = !!BasePostVotesControls;
 
