@@ -1102,21 +1102,26 @@
   .topic-tile__overflow {
     display: inline-flex;
     margin-left: auto;
-    border: 0;
-    background: transparent;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
     color: var(--primary-medium);
     cursor: pointer;
     padding: 0.15em;
     align-items: center;
     justify-content: center;
 
-    &:hover {
+    &:hover,
+    &:focus {
       color: var(--primary);
+      background: transparent !important;
+      box-shadow: none !important;
     }
 
     .d-icon {
       width: 1em;
       height: 1em;
+      margin: 0;
     }
   }
 }

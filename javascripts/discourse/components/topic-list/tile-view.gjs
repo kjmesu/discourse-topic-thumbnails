@@ -22,81 +22,81 @@ export default class TileView extends Component {
 
   <template>
     <article class="topic-tile">
+      <div class="topic-tile__header topic-author">
+        {{#if @showAuthor}}
+          <UserInfo
+            @user={{@topic.creator}}
+            @includeLink={{true}}
+            @includeAvatar={{true}}
+            @size="small"
+            class="topic-tile__header-user topic-author__user"
+          />
+          {{#if @showUserFeedback}}
+            <InlineUserFeedback
+              @shouldRender={{true}}
+              @rating={{@topic.creator.average_rating}}
+              @count={{@topic.creator.total_trade_count}}
+            />
+          {{/if}}
+        {{/if}}
+        <DMenu
+          @identifier={{@overflowIdentifier}}
+          @icon="ellipsis-vertical"
+          @ariaLabel={{i18n "topic_thumbnails.actions.more_actions"}}
+          @triggerClass="topic-tile__overflow"
+          @modalForMobile={{true}}
+          @onRegisterApi={{@onRegisterOverflowMenu}}
+          @onShow={{@onOverflowShow}}
+          @onClose={{@onOverflowClose}}
+        >
+          <:content>
+            <div class="topic-compact-meta__overflow-menu">
+              <DropdownMenu as |dropdown|>
+                <dropdown.item>
+                  <button
+                    type="button"
+                    class="topic-compact-meta__overflow-item"
+                    {{on "click" @onOverflowShare}}
+                  >
+                    {{dIcon "share"}}
+                    {{i18n "post.controls.share_action"}}
+                  </button>
+                </dropdown.item>
+                <dropdown.item>
+                  <button
+                    type="button"
+                    class="topic-compact-meta__overflow-item"
+                    {{on "click" @onOverflowSave}}
+                  >
+                    {{if
+                      @isBookmarked
+                      @removeSaveLabel
+                      @saveLabel
+                    }}
+                  </button>
+                </dropdown.item>
+                <dropdown.item>
+                  <button
+                    type="button"
+                    class="topic-compact-meta__overflow-item"
+                    {{on "click" @onOverflowReport}}
+                  >
+                    {{dIcon "flag"}}
+                    {{@reportLabel}}
+                  </button>
+                </dropdown.item>
+              </DropdownMenu>
+            </div>
+          </:content>
+        </DMenu>
+      </div>
+
       <a
         href={{@firstPostUrl}}
         class="topic-tile__link"
         {{on "click" @onClick}}
         {{on "auxclick" @onClick}}
       >
-        <div class="topic-tile__header topic-author">
-          {{#if @showAuthor}}
-            <UserInfo
-              @user={{@topic.creator}}
-              @includeLink={{true}}
-              @includeAvatar={{true}}
-              @size="small"
-              class="topic-tile__header-user topic-author__user"
-            />
-            {{#if @showUserFeedback}}
-              <InlineUserFeedback
-                @shouldRender={{true}}
-                @rating={{@topic.creator.average_rating}}
-                @count={{@topic.creator.total_trade_count}}
-              />
-            {{/if}}
-          {{/if}}
-          <DMenu
-            @identifier={{@overflowIdentifier}}
-            @icon="ellipsis-vertical"
-            @ariaLabel={{i18n "topic_thumbnails.actions.more_actions"}}
-            @triggerClass="topic-tile__overflow"
-            @modalForMobile={{true}}
-            @onRegisterApi={{@onRegisterOverflowMenu}}
-            @onShow={{@onOverflowShow}}
-            @onClose={{@onOverflowClose}}
-          >
-            <:content>
-              <div class="topic-compact-meta__overflow-menu">
-                <DropdownMenu as |dropdown|>
-                  <dropdown.item>
-                    <button
-                      type="button"
-                      class="topic-compact-meta__overflow-item"
-                      {{on "click" @onOverflowShare}}
-                    >
-                      {{dIcon "share"}}
-                      {{i18n "post.controls.share_action"}}
-                    </button>
-                  </dropdown.item>
-                  <dropdown.item>
-                    <button
-                      type="button"
-                      class="topic-compact-meta__overflow-item"
-                      {{on "click" @onOverflowSave}}
-                    >
-                      {{if
-                        @isBookmarked
-                        @removeSaveLabel
-                        @saveLabel
-                      }}
-                    </button>
-                  </dropdown.item>
-                  <dropdown.item>
-                    <button
-                      type="button"
-                      class="topic-compact-meta__overflow-item"
-                      {{on "click" @onOverflowReport}}
-                    >
-                      {{dIcon "flag"}}
-                      {{@reportLabel}}
-                    </button>
-                  </dropdown.item>
-                </DropdownMenu>
-              </div>
-            </:content>
-          </DMenu>
-        </div>
-
         <div
           class={{concatClass
             "topic-tile__thumbnail"
