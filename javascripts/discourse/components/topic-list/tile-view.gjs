@@ -7,6 +7,7 @@ import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import TopicStatus from "discourse/components/topic-status";
 import UserInfo from "discourse/components/user-info";
+import categoryLink from "discourse/helpers/category-link";
 import ThumbnailImage from "./shared/thumbnail-image";
 import AuthorInfo from "./shared/author-info";
 import InlineUserFeedback from "../inline-user-feedback";
@@ -126,11 +127,10 @@ export default class TileView extends Component {
               @topic={{@topic}}
               @showUserFeedback={{false}}
               @showActivity={{true}}
-              @showCategory={{@showCategory}}
+              @showCategory={{false}}
               @compactDate={{true}}
               @userClass="topic-tile__author-user topic-author__user"
               @activityClass="topic-tile__activity topic-author__activity"
-              @categoryClass="topic-tile__category topic-author__category"
             />
           </div>
         {{/if}}
@@ -139,6 +139,12 @@ export default class TileView extends Component {
           <TopicStatus @topic={{@topic}} />
           <span>{{@topic.title}}</span>
         </h3>
+
+        {{#if @showCategory}}
+          <div class="topic-tile__category">
+            {{categoryLink @topic.category}}
+          </div>
+        {{/if}}
 
         <div class="topic-tile__meta topic-meta">
           <@topicVoteControls @topic={{@topic}} />

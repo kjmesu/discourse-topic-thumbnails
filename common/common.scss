@@ -1075,8 +1075,8 @@
 
     span {
       display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -1088,6 +1088,19 @@
 
   .topic-list-item.visited .topic-tile__title {
     color: var(--primary-medium);
+  }
+
+  .topic-tile__category {
+    padding: 0.2em 0.75em 0;
+    font-size: var(--font-down-1-rem);
+
+    .badge-category__wrapper,
+    .badge-category,
+    .badge-category__name {
+      font-size: inherit;
+      line-height: inherit;
+      margin: 0;
+    }
   }
 
   .topic-tile__meta {
