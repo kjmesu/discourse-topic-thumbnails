@@ -939,6 +939,8 @@
   }
 
   .topic-tile {
+    display: flex;
+    flex-direction: column;
     border: 1px solid var(--primary-low);
     border-radius: 0.75em;
     overflow: hidden;
