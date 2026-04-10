@@ -922,16 +922,17 @@
       width: 100%;
       height: 100%;
       padding: 0;
-
-      .link-top-line,
-      .link-bottom-line,
-      .topic-item-stats,
-      .discourse-tags,
-      .topic-post-badges,
-      .topic-excerpt {
-        display: none;
-      }
     }
+  }
+
+  .topic-list-item .link-top-line,
+  .topic-list-item .link-bottom-line,
+  .topic-list-item .topic-item-stats,
+  .topic-list-item .discourse-tags,
+  .topic-list-item .topic-post-badges,
+  .topic-list-item .topic-excerpt,
+  .topic-list-item .topic-list-data.posters {
+    display: none !important;
   }
 
   .topic-tile {
