@@ -6,8 +6,10 @@ import DMenu from "discourse/float-kit/components/d-menu";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import TopicStatus from "discourse/components/topic-status";
+import UserInfo from "discourse/components/user-info";
 import ThumbnailImage from "./shared/thumbnail-image";
 import AuthorInfo from "./shared/author-info";
+import InlineUserFeedback from "../inline-user-feedback";
 import MetaActions from "./shared/meta-actions";
 
 export default class TileView extends Component {
@@ -27,6 +29,25 @@ export default class TileView extends Component {
         {{on "click" @onClick}}
         {{on "auxclick" @onClick}}
       >
+        {{#if @showAuthor}}
+          <div class="topic-tile__header topic-author">
+            <UserInfo
+              @user={{@topic.creator}}
+              @includeLink={{true}}
+              @includeAvatar={{true}}
+              @size="small"
+              class="topic-tile__header-user topic-author__user"
+            />
+            {{#if @showUserFeedback}}
+              <InlineUserFeedback
+                @shouldRender={{true}}
+                @rating={{@topic.creator.average_rating}}
+                @count={{@topic.creator.total_trade_count}}
+              />
+            {{/if}}
+          </div>
+        {{/if}}
+
         <div
           class={{concatClass
             "topic-tile__thumbnail"
@@ -54,7 +75,7 @@ export default class TileView extends Component {
           <div class="topic-tile__author topic-author">
             <AuthorInfo
               @topic={{@topic}}
-              @showUserFeedback={{@showUserFeedback}}
+              @showUserFeedback={{false}}
               @showActivity={{true}}
               @showCategory={{@showCategory}}
               @compactDate={{true}}
