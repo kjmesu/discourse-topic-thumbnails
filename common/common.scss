@@ -1099,8 +1099,9 @@
     gap: 1em;
   }
 
-  .topic-tile-meta__overflow {
+  .topic-tile__overflow {
     display: inline-flex;
+    margin-left: auto;
     border: 0;
     background: transparent;
     color: var(--primary-medium);
@@ -1108,23 +1109,14 @@
     padding: 0.15em;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-up-1);
+
+    &:hover {
+      color: var(--primary);
+    }
 
     .d-icon {
-      width: 1.05em;
-      height: 1.05em;
+      width: 1em;
+      height: 1em;
     }
-  }
-}
-
-@media (max-width: 700px) {
-  .topic-thumbnails-tile-style .topic-tile__meta-actions {
-    display: none;
-  }
-}
-
-@media (min-width: 701px) {
-  .topic-thumbnails-tile-style .topic-tile-meta__overflow {
-    display: none;
   }
 }
