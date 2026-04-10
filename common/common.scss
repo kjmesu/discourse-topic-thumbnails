@@ -1061,6 +1061,10 @@
   .topic-tile__author {
     padding: 0.25em 0.75em 0;
     font-size: var(--font-down-1-rem);
+
+    .topic-tile__author-user {
+      display: none;
+    }
   }
 
   .topic-tile__title {
