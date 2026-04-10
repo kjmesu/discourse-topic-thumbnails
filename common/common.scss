@@ -1037,7 +1037,8 @@
 
   .topic-tile__header {
     display: flex;
-    align-items: center;
+    align-items: end;
+    justify-content: space-between;
     padding: 0.6em 0.75em;
     font-size: var(--font-down-1-rem);
     gap: 0.35em;
