@@ -895,16 +895,17 @@
   .topic-list-body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-auto-rows: 1fr;
     gap: 1em;
     padding-top: 5px;
     border-top: none;
+    align-items: stretch;
   }
 
   .topic-list-item {
-    display: block;
+    display: flex;
     padding: 0;
     border: none;
-    height: 100%;
 
     > td,
     > td.bulk-select,
@@ -918,9 +919,9 @@
 
     > td:first-child,
     > td.main-link {
-      display: block;
+      display: flex;
+      flex-direction: column;
       width: 100%;
-      height: 100%;
       padding: 0;
     }
   }
@@ -942,7 +943,7 @@
     border-radius: 0.75em;
     overflow: hidden;
     background: var(--secondary);
-    height: 100%;
+    flex: 1;
     cursor: pointer;
     transition: background 0.15s ease-in-out;
 
@@ -958,7 +959,7 @@
   .topic-tile__link {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
     overflow: hidden;
     color: inherit;
     text-decoration: none;
