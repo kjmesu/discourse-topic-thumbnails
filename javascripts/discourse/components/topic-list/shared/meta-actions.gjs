@@ -52,6 +52,38 @@ export default class MetaActions extends Component {
       >
         {{dIcon "flag"}}
       </span>
+    {{else if @iconOnly}}
+      <span
+        role="button"
+        tabindex="0"
+        class="topic-meta__action"
+        {{on "click" @onShare}}
+        {{on "keydown" (fn @onKeydown @onShare)}}
+      >
+        {{dIcon "share"}}
+      </span>
+      <span
+        role="button"
+        tabindex="0"
+        class="topic-meta__action"
+        {{on "click" @onSave}}
+        {{on "keydown" (fn @onKeydown @onSave)}}
+      >
+        {{#if @isBookmarked}}
+          {{dIcon "bookmark"}}
+        {{else}}
+          {{dIcon "far-bookmark"}}
+        {{/if}}
+      </span>
+      <span
+        role="button"
+        tabindex="0"
+        class="topic-meta__action"
+        {{on "click" @onReport}}
+        {{on "keydown" (fn @onKeydown @onReport)}}
+      >
+        {{dIcon "flag"}}
+      </span>
     {{else}}
       <span
         role="button"

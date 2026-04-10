@@ -3,6 +3,7 @@ import UserInfo from "discourse/components/user-info";
 import categoryLink from "discourse/helpers/category-link";
 import InlineUserFeedback from "../../inline-user-feedback";
 import formatDateAlwaysRelative from "../../../helpers/format-date-always-relative";
+import formatDateCompact from "../../../helpers/format-date-compact";
 
 export default class AuthorInfo extends Component {
   <template>
@@ -23,7 +24,11 @@ export default class AuthorInfo extends Component {
     {{#if @showActivity}}
       <span class={{@activityClass}}>
         <span class="topic-author__relative-date">
-          {{formatDateAlwaysRelative @topic.createdAt}}
+          {{#if @compactDate}}
+            {{formatDateCompact @topic.createdAt}}
+          {{else}}
+            {{formatDateAlwaysRelative @topic.createdAt}}
+          {{/if}}
         </span>
       </span>
     {{/if}}

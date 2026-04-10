@@ -57,6 +57,7 @@ export default class TileView extends Component {
               @showUserFeedback={{@showUserFeedback}}
               @showActivity={{true}}
               @showCategory={{@showCategory}}
+              @compactDate={{true}}
               @userClass="topic-tile__author-user topic-author__user"
               @activityClass="topic-tile__activity topic-author__activity"
               @categoryClass="topic-tile__category topic-author__category"
@@ -78,6 +79,7 @@ export default class TileView extends Component {
           <div class="topic-tile__meta-actions topic-meta__actions">
             <MetaActions
               @isCardStyle={{false}}
+              @iconOnly={{true}}
               @isBookmarked={{@isBookmarked}}
               @onShare={{@onShare}}
               @onSave={{@onSave}}
