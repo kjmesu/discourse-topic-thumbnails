@@ -4,6 +4,7 @@ default_thumbnail_mode:
   choices:
     - compact-style
     - card-style
+    - tile-style
     - none
 
 docs_thumbnail_mode:
@@ -12,6 +13,7 @@ docs_thumbnail_mode:
   choices:
     - compact-style
     - card-style
+    - tile-style
     - none
 
 compact_categories:
@@ -20,6 +22,11 @@ compact_categories:
   default: ""
 
 card_categories:
+  type: list
+  list_type: category
+  default: ""
+
+tile_categories:
   type: list
   list_type: category
   default: ""
@@ -45,6 +52,11 @@ card_tags:
   list_type: tag
   default: ""
 
+tile_tags:
+  type: list
+  list_type: tag
+  default: ""
+
 suggested_topics_mode:
   default: ""
   type: enum
@@ -52,6 +64,7 @@ suggested_topics_mode:
     - ""
     - compact-style
     - card-style
+    - tile-style
     - none
 
 enable_outside_topic_lists: false

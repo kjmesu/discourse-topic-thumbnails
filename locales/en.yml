@@ -6,8 +6,10 @@ en:
       docs_thumbnail_mode: If the docs plugin is enabled, which thumbnail display mode should be used for docs topics?
       compact_categories: The compact view will be used in these categories
       card_categories: The card view will be used in these categories
+      tile_categories: The tile view will be used in these categories
       compact_tags: The compact view will be used for these tags
       card_tags: The card view will be used for these tags
+      tile_tags: The tile view will be used for these tags
       suggested_topics_mode: Which thumbnail display mode should be used for suggested topics? If blank, will follow the 'enable outside topic lists' setting.
       enable_outside_topic_lists: Enable thumbnails on non-topic-list pages (e.g. user activity, personal messages, suggested topics)
       placeholder_icon: Icon to display on topics without thumbnail images
@@ -36,6 +38,7 @@ en:
     view_modes:
       compact-style: "Compact"
       card-style: "Card"
+      tile-style: "Tile"
     actions:
       save: "Save"
       remove_saved: "Remove from saved"

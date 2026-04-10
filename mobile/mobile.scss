@@ -116,6 +116,36 @@
   }
 }
 
+.topic-thumbnails-tile-style {
+  .topic-list-body {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75em;
+  }
+
+  .topic-tile__author,
+  .topic-tile__author * {
+    font-size: var(--font-down-1-rem) !important;
+    line-height: var(--line-height-medium) !important;
+  }
+
+  .topic-tile__activity {
+    font-size: var(--font-down-2-rem) !important;
+
+    .relative-date {
+      font-size: inherit !important;
+      line-height: inherit !important;
+    }
+  }
+
+  .topic-author__category {
+    display: none;
+  }
+
+  .topic-list-data {
+    max-width: unset;
+  }
+}
+
 .topic-thumbnails-card-style,
 .topic-thumbnails-compact-style {
   .topic-card__author,

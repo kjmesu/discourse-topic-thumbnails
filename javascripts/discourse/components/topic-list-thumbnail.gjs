@@ -17,6 +17,7 @@ import Bookmark from "discourse/models/bookmark";
 import TopicVoteControls from "./topic-vote-controls";
 import CardView from "./topic-list/card-view";
 import CompactView from "./topic-list/compact-view";
+import TileView from "./topic-list/tile-view";
 
 const OVERFLOW_EVENT = "topic-thumbnails:overflow-open";
 const RESPONSIVE_RATIOS = [1, 1.5, 2];
@@ -98,9 +99,14 @@ export default class TopicListThumbnail extends Component {
       return 800;
     }
 
-    return this.topicThumbnails.displayCompactStyle
-      ? settings.list_thumbnail_size
-      : 400;
+    if (
+      this.topicThumbnails.displayCompactStyle ||
+      this.topicThumbnails.displayTileStyle
+    ) {
+      return settings.list_thumbnail_size;
+    }
+
+    return 400;
   }
 
   @cached
@@ -178,6 +184,10 @@ export default class TopicListThumbnail extends Component {
     return this.topicThumbnails.displayCompactStyle && this.topic?.creator;
   }
 
+  get showTileAuthor() {
+    return this.topicThumbnails.displayTileStyle && this.topic?.creator;
+  }
+
   get showCategory() {
     return !this.topicThumbnails.isViewingCategory && this.topic?.category;
   }
@@ -214,6 +224,10 @@ export default class TopicListThumbnail extends Component {
 
   get compactOverflowIdentifier() {
     return this.#compactOverflowKey();
+  }
+
+  get tileOverflowIdentifier() {
+    return `tile-${this.topic?.id ?? "unknown"}`;
   }
 
   @action
@@ -407,6 +421,23 @@ export default class TopicListThumbnail extends Component {
     }
   }
 
+  @action
+  handleTileClick(event) {
+    if (wantsNewWindow(event)) {
+      return;
+    }
+
+    const target = event.target;
+    const isInteractive = target.closest(
+      'a, button, [role="button"], .topic-vote-button, .topic-votes, .d-menu'
+    );
+
+    if (!isInteractive) {
+      event.preventDefault();
+      DiscourseURL.routeTo(this.firstPostUrl);
+    }
+  }
+
   <template>
     {{#if this.topicThumbnails.displayCardStyle}}
       <CardView
@@ -450,6 +481,38 @@ export default class TopicListThumbnail extends Component {
         @reportLabel={{this.reportLabel}}
         @overflowIdentifier={{this.compactOverflowIdentifier}}
         @onClick={{this.handleCompactClick}}
+        @onShare={{this.copyTopicLink}}
+        @onSave={{this.toggleSave}}
+        @onReport={{this.reportTopic}}
+        @onKeydown={{this.handleActionKeydown}}
+        @onOverflowShare={{this.overflowShare}}
+        @onOverflowSave={{this.overflowSave}}
+        @onOverflowReport={{this.overflowReport}}
+        @onRegisterOverflowMenu={{this.registerCompactOverflowMenu}}
+        @onOverflowShow={{this.handleCompactOverflowShow}}
+        @onOverflowClose={{this.handleCompactOverflowClose}}
+      />
+    {{else if this.topicThumbnails.displayTileStyle}}
+      <TileView
+        @topic={{this.topic}}
+        @topicVoteControls={{this.topicVoteControlsComponent}}
+        @firstPostUrl={{this.firstPostUrl}}
+        @hasThumbnail={{this.hasThumbnail}}
+        @fallbackSrc={{this.fallbackSrc}}
+        @srcSet={{this.srcSet}}
+        @width={{this.width}}
+        @height={{this.height}}
+        @placeholderIcon={{this.placeholderIcon}}
+        @showAuthor={{this.showTileAuthor}}
+        @showUserFeedback={{this.showUserFeedback}}
+        @showCategory={{this.showCategory}}
+        @isBookmarked={{this.isBookmarked}}
+        @commentsLabel={{this.commentsLabel}}
+        @saveLabel={{this.saveLabel}}
+        @removeSaveLabel={{this.removeSaveLabel}}
+        @reportLabel={{this.reportLabel}}
+        @overflowIdentifier={{this.tileOverflowIdentifier}}
+        @onClick={{this.handleTileClick}}
         @onShare={{this.copyTopicLink}}
         @onSave={{this.toggleSave}}
         @onReport={{this.reportTopic}}

@@ -14,8 +14,13 @@ const cardCategories = settings.card_categories
   .split("|")
   .map((id) => parseInt(id, 10));
 
+const tileCategories = settings.tile_categories
+  .split("|")
+  .map((id) => parseInt(id, 10));
+
 const compactTags = settings.compact_tags.split("|");
 const cardTags = settings.card_tags.split("|");
+const tileTags = settings.tile_tags.split("|");
 
 const enabledCategories = settings.enabled_categories
   .split("|")
@@ -142,10 +147,14 @@ export default class TopicThumbnailService extends Service {
       return "card-style";
     } else if (compactCategories.includes(viewingCategoryId)) {
       return "compact-style";
+    } else if (tileCategories.includes(viewingCategoryId)) {
+      return "tile-style";
     } else if (cardTags.includes(viewingTagName)) {
       return "card-style";
     } else if (compactTags.includes(viewingTagName)) {
       return "compact-style";
+    } else if (tileTags.includes(viewingTagName)) {
+      return "tile-style";
     } else if (isTopicListRoute) {
       return settings.default_thumbnail_mode;
     } else if (settings.enable_outside_topic_lists) {
@@ -186,8 +195,13 @@ export default class TopicThumbnailService extends Service {
     return shouldDisplay && displayMode === "card-style";
   }
 
+  @discourseComputed("shouldDisplay", "displayMode")
+  displayTileStyle(shouldDisplay, displayMode) {
+    return shouldDisplay && displayMode === "tile-style";
+  }
+
   get availableViewModes() {
-    return ["compact-style", "card-style"];
+    return ["compact-style", "card-style", "tile-style"];
   }
 
   setManualDisplayMode(mode) {

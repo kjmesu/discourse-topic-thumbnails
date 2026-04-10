@@ -11,6 +11,8 @@ export default apiInitializer((api) => {
       value.push("topic-thumbnails-compact");
     } else if (ttService.displayCardStyle) {
       value.push("topic-thumbnails-card-style");
+    } else if (ttService.displayTileStyle) {
+      value.push("topic-thumbnails-tile-style");
     }
     return value;
   });
@@ -25,6 +27,8 @@ export default apiInitializer((api) => {
       {{#if ttService.displayCompactStyle}}
         <TopicListThumbnail @topic={{@outletArgs.topic}} />
       {{else if ttService.displayCardStyle}}
+        <TopicListThumbnail @topic={{@outletArgs.topic}} />
+      {{else if ttService.displayTileStyle}}
         <TopicListThumbnail @topic={{@outletArgs.topic}} />
       {{/if}}
     </template>
@@ -46,9 +50,11 @@ export default apiInitializer((api) => {
       classNameBindings: [
         "isCompactStyle:topic-thumbnails-compact",
         "isCardStyle:topic-thumbnails-card-style",
+        "isTileStyle:topic-thumbnails-tile-style",
       ],
       isCompactStyle: readOnly("topicThumbnailsService.displayCompactStyle"),
       isCardStyle: readOnly("topicThumbnailsService.displayCardStyle"),
+      isTileStyle: readOnly("topicThumbnailsService.displayTileStyle"),
     });
   }
 });
