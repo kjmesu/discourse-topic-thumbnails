@@ -1041,12 +1041,17 @@
   .topic-tile__title {
     padding: 0.35em 0.75em 0;
     margin: 0;
+    flex-grow: 1;
     font-size: var(--font-0-rem);
     font-weight: 600;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+
+    span {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 
   .topic-list-item:not(.visited) .topic-tile__title {
